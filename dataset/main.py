@@ -1,8 +1,10 @@
 import torch
 import json
+import sys
+sys.path.append('/content/arshad')
 from extractor import DataExtractor 
 from make_variable import dataset
-import sys
+
 from  torch.utils.data import DataLoader , TensorDataset
 
 import time
@@ -42,6 +44,7 @@ class data :
         return self.train_loader
     def  test_data(self ) : 
         return self.test_loader
+
 
 
 
