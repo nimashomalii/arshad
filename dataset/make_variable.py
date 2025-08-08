@@ -47,8 +47,8 @@ class dataset(nn.Module) :
         base_extracted_dir = file_path['base_extracted_dir']
         label_file_path = file_path['labels_file']
         stimuli_files = file_path['stimuli_files']
-        baseline_data = extract_and_tensor(base_extracted_dir) #(23, 18 , 7808, 14)
-        labels = extract_and_tensor(label_file_path)
+        baseline_data = extract_and_tensor(base_extracted_dir,  dtype ) #(23, 18 , 7808, 14)
+        labels = extract_and_tensor(label_file_path ,  dtype)
 
         all_train_data_slices = []
         all_train_label_slices = []
@@ -106,5 +106,6 @@ class dataset(nn.Module) :
             self.test_data = (self.test_data- self.mean) / std_dev
     def recieve_data(self) : 
         return self.train_data , self.test_data , self.train_labels , self.test_labels
+
 
 
