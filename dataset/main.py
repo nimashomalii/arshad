@@ -10,7 +10,7 @@ import time
 
 import torch.nn as nn 
 # در فایل main.py
-def prepar_dataset(test_person, over_lap, time_len, device, emotion, label_method=None):
+def prepar_dataset(test_person, over_lap, time_len, device, emotion, label_method):
     with open('dataset/config.json', 'r') as f:
         config = json.load(f)
     file_id = config['file_id']
@@ -43,6 +43,7 @@ class data :
         return self.train_loader
     def  test_data(self ) : 
         return self.test_loader
+
 
 
 
