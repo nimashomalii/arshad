@@ -104,8 +104,9 @@ class dataset(nn.Module) :
             std_dev = torch.sqrt(self.variance)
             self.train_data = (self.train_data - self.mean)/ std_dev
             self.test_data = (self.test_data- self.mean) / std_dev
-    def recieve_data(self) : 
+    def receive_data(self) : 
         return self.train_data , self.test_data , self.train_labels , self.test_labels
+
 
 
 
