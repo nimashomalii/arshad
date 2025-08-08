@@ -1,6 +1,6 @@
 import os
 import shutil
-!pip install gdown
+
 import gdown # اگر gdown نصب نیست: !pip install gdown
 
 # برای استفاده از دستورات shell مانند !unrar در Colab، نیاز به import کردن sys است
@@ -76,4 +76,5 @@ class DataExtractor:
             except OSError as e:
                 print(f"خطا در پاک کردن پوشه {self.extract_base_path}: {e}. لطفاً دسترسی‌ها را بررسی کنید.")
         else:
+
             print(f"پوشه '{self.extract_base_path}' وجود ندارد. چیزی برای پاک کردن نیست.")
