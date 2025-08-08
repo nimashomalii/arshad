@@ -25,7 +25,7 @@ class DataExtractor:
         :param file_id: شناسه فایل Google Drive.
         :param output_file_name: نام فایل RAR دانلود شده.
         """
-        url = f"https://drive.google.com/uc?id={file_id}"
+        url = f"https://drive.google.com/file/d/{file_id}/view?usp=sharing"
         output_path_rar = os.path.join(self.extract_base_path, output_file_name) # ذخیره rar داخل پوشه اصلی
 
         print(f"در حال دانلود فایل از Google Drive (ID: {file_id})...")
@@ -79,4 +79,5 @@ class DataExtractor:
         else:
 
             print(f"پوشه '{self.extract_base_path}' وجود ندارد. چیزی برای پاک کردن نیست.")
+
 
