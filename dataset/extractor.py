@@ -10,7 +10,7 @@ import gdown # اگر gdown نصب نیست: !pip install gdown
 # os.system(f"unrar x -o+ {output_file} {extract_path}/")
 
 class DataExtractor:
-    def __init__(self, extract_base_path="extracted_data_dir"):
+    def __init__(self, extract_base_path="extracted_rar"):
         """
         کلاس را مقداردهی اولیه می‌کند.
         :param extract_base_path: مسیر پایه برای استخراج فایل‌ها.
@@ -79,6 +79,7 @@ class DataExtractor:
         else:
 
             print(f"پوشه '{self.extract_base_path}' وجود ندارد. چیزی برای پاک کردن نیست.")
+
 
 
 
