@@ -1,6 +1,6 @@
 import os
 import shutil
-
+import rarfile
 import gdown # اگر gdown نصب نیست: !pip install gdown
 
 # برای استفاده از دستورات shell مانند !unrar در Colab، نیاز به import کردن sys است
@@ -44,7 +44,8 @@ class DataExtractor:
             # توجه: دستور !unrar در محیط Colab مستقیماً کار می کند.
             # اگر این کد را در محیطی غیر از Colab یا داخل تابعی خارج از سلول مستقیم استفاده کنید،
             # باید از os.system(f"unrar x -o+ {output_path_rar} {self.extract_base_path}/") استفاده کنید.
-            !unrar x -o+ {output_path_rar} {self.extract_base_path}/
+            with rarfile.RarFile(output_path_rar, 'r') as rf:
+                rf.extractall(self.extract_base_path)
             print(f"فایل '{output_file_name}' با موفقیت استخراج شد.")
         except Exception as e:
             print(f"خطا در استخراج فایل RAR: {e}")
@@ -78,3 +79,4 @@ class DataExtractor:
         else:
 
             print(f"پوشه '{self.extract_base_path}' وجود ندارد. چیزی برای پاک کردن نیست.")
+
