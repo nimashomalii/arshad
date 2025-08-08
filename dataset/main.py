@@ -1,9 +1,8 @@
 import torch
 import json
 import sys
-sys.path.append('/content/arshad')
-from extractor import DataExtractor 
-from make_variable import dataset
+from dataset.extractor import DataExtractor 
+from dataset.make_variable import dataset
 
 from  torch.utils.data import DataLoader , TensorDataset
 
@@ -12,7 +11,7 @@ import time
 import torch.nn as nn 
 # در فایل main.py
 def prepar_dataset(test_person, over_lap, time_len, device, emotion, label_method=None):
-    with open('config.json', 'r') as f:
+    with open('dataset/config.json', 'r') as f:
         config = json.load(f)
     file_id = config['file_id']
     file_path = config['data_path']
@@ -44,6 +43,7 @@ class data :
         return self.train_loader
     def  test_data(self ) : 
         return self.test_loader
+
 
 
 
