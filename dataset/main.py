@@ -10,7 +10,7 @@ import time
 
 import torch.nn as nn 
 # در فایل main.py
-def prepar_dataset(test_person, over_lap, time_len, emotion, label_method):
+def prepar_dataset(test_person, over_lap, time_len , device, emotion, label_method):
     with open('dataset/config.json', 'r') as f:
         config = json.load(f)
     file_id = config['file_id']
@@ -19,7 +19,7 @@ def prepar_dataset(test_person, over_lap, time_len, emotion, label_method):
     extract_data = DataExtractor()
     extract_data.extract_data_file(file_id)
 
-    data_manage = dataset(test_person, over_lap, time_len, device, emotion, label_method)
+    data_manage = dataset(test_person, over_lap, time_len, emotion, label_method)
     data_manage.extract(file_path, torch.float64)
     data_manage.normalize()
     x_train, x_test, y_train, y_test = data_manage.receive_data()
