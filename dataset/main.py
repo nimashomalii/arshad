@@ -14,7 +14,7 @@ def prepar_dataset(test_person, over_lap, time_len, device, emotion, label_metho
     with open('dataset/config.json', 'r') as f:
         config = json.load(f)
     file_id = config['file_id']
-    file_path = config['data_path']
+    file_path = config['data_paths']
 
     extract_data = DataExtractor()
     extract_data.extract_data_file(file_id)
@@ -43,6 +43,7 @@ class data :
         return self.train_loader
     def  test_data(self ) : 
         return self.test_loader
+
 
 
 
