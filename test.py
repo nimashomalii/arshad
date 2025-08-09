@@ -5,6 +5,7 @@ from models.simpleNN import model
 from train import Trainer
 import torch
 import plot 
+import matplotlib.pyplot as plt
 
 # ____________DATA SET __________#
 #the first step is to make datset ready for work 
@@ -40,6 +41,9 @@ history = trainer.fit()
 print(history)
 #____plot_result___#
 plot.plot_training_history(history)
+plt.plot([1 , 2 , 3 , 4 ] , [ 0.24 , 0.87 , 0.62 , 0.78) 
+plt.show()
+
 
 
 
