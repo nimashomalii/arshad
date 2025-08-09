@@ -21,7 +21,13 @@ class Trainer:
         self.checkpoint_path = checkpoint_path
         self.log_path = log_path
         self.start_epoch = 1
-        self.history = []
+        self.history = {
+                "epoch": [],
+                "train_loss":[],
+                "val_loss": [],
+                "train_acc": [] , 
+                "val_acc": []
+            }
 
         # اگر چک‌پوینت قبلی هست، لود کن
         self._load_checkpoint()
@@ -111,13 +117,11 @@ class Trainer:
             loss_train , loss_test,accuracy_train ,  accuracy_test = self.evaluate()
 
             # ذخیره در history
-            self.history.append({
-                "epoch": epoch,
-                "train_loss": loss_train,
-                "val_loss": loss_test,
-                "train_acc": accuracy_train , 
-                "val_acc": accuracy_test
-            })
+            self.history['epoch'].append(epoch)
+            self.history['train_loss'].append(loss_train)
+            self.history['val_loss'].append(loss_test)
+            self.history['train_acc'].append(accuracy_train)
+            self.history['val_acc'].append(accuracy_test)
 
             print(f"Epoch [{epoch}/{self.epochs}] "
                   f"Train Loss: {loss_train:.4f} | "
