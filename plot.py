@@ -1,6 +1,14 @@
 import matplotlib.pyplot as plt
 
 def plot_training_history(history):
+    history = {
+                "epoch": [1 , 5 , 1 , 2 , 4 ],
+                "train_loss":[0.1 , 0.2 , 0.3 , 0.8 , 0.1],
+                "val_loss": [0.8 , 0.7 , 0.6 , 0.3 , 0.7],
+                "train_acc": [0.1 , 0.2 , 0.3 , 0.8 , 0.1] , 
+                "val_acc": [0.8 , 0.7 , 0.6 , 0.3 , 0.7]
+            }
+
     epochs = range(1, len(history['train_loss']) + 1)
 
     # نمودار Loss
@@ -26,3 +34,4 @@ def plot_training_history(history):
 
 # استفاده بعد از فیت کردن
 #plot_training_history(history)
+
