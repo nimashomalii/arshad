@@ -108,7 +108,7 @@ class Trainer:
                 total += y.size(0)
 
         accuracy_train = 100 * correct / total
-        loss_train = total_loss / len(self.test_loader)
+        loss_train = total_loss / len(self.train_loader)
         return loss_train , loss_test,accuracy_train ,  accuracy_test
 
     def fit(self):
@@ -132,3 +132,4 @@ class Trainer:
             # ذخیره چک‌پوینت
             self._save_checkpoint(epoch)
         return self.history
+
