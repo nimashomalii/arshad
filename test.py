@@ -38,9 +38,9 @@ trainer = Trainer(
 )
 #____fit_model_____#
 history = trainer.fit()
-print(history)
 #____plot_result___#
 plot.plot_training_history(history)
+
 
 
 
