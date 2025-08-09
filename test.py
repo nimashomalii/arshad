@@ -15,7 +15,8 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 emotion= 'arousal'
 label_method = 'binary'
 batch_size = 126 
-my_dataset = data(test_person, overlap, time_len, device, emotion, label_method, batch_size)
+data_type = torch.float32
+my_dataset = data(test_person, overlap, time_len, device, emotion, label_method, batch_size, data_type)
 train_loader = my_dataset.train_data()
 test_loader = my_dataset.test_data()
 
@@ -38,4 +39,3 @@ trainer = Trainer(
 history = trainer.fit()
 #____plot_result___#
 plot.plot_training_history(history)
-
