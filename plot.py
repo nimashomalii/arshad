@@ -30,8 +30,11 @@ def plot_training_history(history):
     plt.legend()
 
     plt.tight_layout()
-    plt.show()
+    plt.tight_layout()
+    plt.savefig("plot.png")
+
 
 # استفاده بعد از فیت کردن
 #plot_training_history(history)
+
 
