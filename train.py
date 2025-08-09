@@ -84,26 +84,46 @@ class Trainer:
                 correct += (predicted.squeeze() == y.int()).sum().item()
                 total += y.size(0)
 
-        accuracy = 100 * correct / total
-        return total_loss / len(self.test_loader), accuracy
+        accuracy_test = 100 * correct / total
+        loss_test = total_loss / len(self.test_loader)
+        total_loss = 0
+        correct = 0
+        total = 0
+
+        with torch.no_grad():
+            for x, y in self.train_loader:
+                x, y = x.to(self.device), y.to(self.device).float()
+                y_pred = self.model(x)
+                loss = self.loss_fn(y_pred.squeeze(), y)
+                total_loss += loss.item()
+
+                predicted = (torch.sigmoid(y_pred) > 0.5).int()
+                correct += (predicted.squeeze() == y.int()).sum().item()
+                total += y.size(0)
+
+        accuracy_train = 100 * correct / total
+        loss_train = total_loss / len(self.test_loader)
+        return loss_train , loss_test,accuracy_train ,  accuracy_test
 
     def fit(self):
         for epoch in range(self.start_epoch, self.epochs + 1):
             train_loss = self.train_one_epoch()
-            val_loss, val_acc = self.evaluate()
+            loss_train , loss_test,accuracy_train ,  accuracy_test = self.evaluate()
 
             # ذخیره در history
             self.history.append({
                 "epoch": epoch,
-                "train_loss": train_loss,
-                "val_loss": val_loss,
-                "val_acc": val_acc
+                "train_loss": loss_train,
+                "val_loss": loss_test,
+                "train_acc": accuracy_train , 
+                "val_acc": accuracy_test
             })
 
             print(f"Epoch [{epoch}/{self.epochs}] "
-                  f"Train Loss: {train_loss:.4f} | "
-                  f"Val Loss: {val_loss:.4f} | "
-                  f"Val Acc: {val_acc:.2f}%")
+                  f"Train Loss: {loss_train:.4f} | "
+                  f"Val Loss: {loss_test:.4f} | "
+                  f"train Acc: {accuracy_train:.2f} |"
+                  f"Val Acc: {accuracy_test:.2f}%")
 
             # ذخیره چک‌پوینت
             self._save_checkpoint(epoch)
