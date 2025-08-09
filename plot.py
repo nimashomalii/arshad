@@ -9,23 +9,24 @@ def plot_training_history(history):
     
     epochs = range(1, len(history['train_loss']) + 1)
 
-    # نمودار Loss
-    plt.subplot(1, 2, 1)
+    # --- نمودار Loss ---
+    plt.figure(figsize=(8, 6))
     plt.plot(epochs, history['train_loss'], label='Train Loss')
     plt.plot(epochs, history['val_loss'], label='Test Loss')
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
     plt.title('Loss over epochs')
     plt.legend()
+    plt.tight_layout()
+    plt.savefig("loss_plot.png")
 
-    # نمودار Accuracy
-    plt.subplot(1, 2, 2)
+    # --- نمودار Accuracy ---
+    plt.figure(figsize=(8, 6))
     plt.plot(epochs, history['train_acc'], label='Train Accuracy')
     plt.plot(epochs, history['val_acc'], label='Test Accuracy')
     plt.xlabel('Epoch')
     plt.ylabel('Accuracy')
     plt.title('Accuracy over epochs')
     plt.legend()
-
     plt.tight_layout()
-    plt.savefig("plot.png")
+    plt.savefig("accuracy_plot.png")
