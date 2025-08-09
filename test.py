@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 #the first step is to make datset ready for work 
 test_person = [2,9 , 15 , 20]
 overlap = 0.1
-time_len = 50
+time_len = 5
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 emotion= 'valence'
 label_method = 'binary'
@@ -32,7 +32,7 @@ trainer = Trainer(
     device=device,
     optimizer_cls=torch.optim.Adam,
     lr=5e-4,
-    epochs=5,
+    epochs=50,
     checkpoint_path="eeg_checkpoint.pth",
     log_path="eeg_log.json"
 )
@@ -43,6 +43,7 @@ print(history)
 plot.plot_training_history(history)
 plt.plot([1 , 2 , 3 , 4 ] , [ 0.24 , 0.87 , 0.62 , 0.78]) 
 plt.show()
+
 
 
 
