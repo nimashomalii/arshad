@@ -24,7 +24,7 @@ Model = model([128, 64, 1])  # معماری دلخواه
 
 #____trainer_______#
 trainer = Trainer(
-    model=model,
+    model=Model,
     train_loader=train_loader,
     test_loader=test_loader,
     device=device,
@@ -38,3 +38,4 @@ trainer = Trainer(
 history = trainer.fit()
 #____plot_result___#
 plot.plot_training_history(history)
+
