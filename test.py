@@ -10,8 +10,8 @@ import matplotlib.pyplot as plt
 # ____________DATA SET __________#
 #the first step is to make datset ready for work 
 test_person = [2,9 , 15 , 20]
-overlap = 0
-time_len = 0.7
+overlap = 0.2
+time_len = 5
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 emotion= 'arousal'
 label_method = 'binary'
@@ -22,7 +22,7 @@ train_loader = my_dataset.train_data()
 test_loader = my_dataset.test_data()
 
 #____Model______#
-Model = model([1246, 64, 1])  # معماری دلخواه
+Model = model([8960, 64, 1])  # معماری دلخواه
 
 #____trainer_______#
 trainer = Trainer(
@@ -40,6 +40,7 @@ trainer = Trainer(
 history = trainer.fit()
 #____plot_result___#
 plot.plot_training_history(history)
+
 
 
 
