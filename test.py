@@ -32,7 +32,7 @@ trainer = Trainer(
     device=device,
     optimizer_cls=torch.optim.Adam,
     lr=5e-4,
-    epochs=20,
+    epochs=40,
     checkpoint_path="eeg_checkpoint.pth",
     log_path="eeg_log.json"
 )
@@ -40,6 +40,7 @@ trainer = Trainer(
 history = trainer.fit()
 #____plot_result___#
 plot.plot_training_history(history)
+
 
 
 
