@@ -9,8 +9,8 @@ import matplotlib.pyplot as plt
 
 # ____________DATA SET __________#
 #the first step is to make datset ready for work 
-test_person = [2 ,8,12,15,20 ]
-overlap = 0.2
+test_person = [1 ,4,7,11 ,23 ]
+overlap = 0.3
 time_len = 5
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 emotion= 'dominance'
@@ -41,3 +41,4 @@ history = trainer.fit()
 #____plot_result___#
 plot.plot_training_history(history)
   
+
