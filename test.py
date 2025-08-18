@@ -22,7 +22,7 @@ train_loader = my_dataset.train_data()
 test_loader = my_dataset.test_data()
 
 #____Model______#
-Model = model([8960, 64, 1])  # معماری دلخواه
+Model = model([1792, 64, 1])  # معماری دلخواه
 
 #____trainer_______#
 trainer = Trainer(
@@ -41,6 +41,7 @@ history = trainer.fit()
 #____plot_result___#
 plot.plot_training_history(history)
   
+
 
 
 
