@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 # ____________DATA SET __________#
 #the first step is to make datset ready for work 
 test_person = [2,9 , 15 , 20]
-overlap = 0.1
+overlap = 0
 time_len = 1
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 emotion= 'valence'
@@ -40,6 +40,7 @@ trainer = Trainer(
 history = trainer.fit()
 #____plot_result___#
 plot.plot_training_history(history)
+
 
 
 
