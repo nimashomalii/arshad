@@ -11,11 +11,11 @@ import matplotlib.pyplot as plt
 #the first step is to make datset ready for work 
 test_person = [1 ,4,7,11 ,22 ]
 overlap = 0.3
-time_len = 5
+time_len = 1
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-emotion= 'dominance'
+emotion= 'arousal'
 label_method = 'binary'
-batch_size = 250
+batch_size = 160
 data_type = torch.float32
 my_dataset = data(test_person, overlap, time_len, device, emotion, label_method, batch_size, data_type)
 train_loader = my_dataset.train_data()
@@ -41,5 +41,6 @@ history = trainer.fit()
 #____plot_result___#
 plot.plot_training_history(history)
   
+
 
 
