@@ -13,7 +13,7 @@ test_person = [0 , 6 , 13, 19 , 21 ]
 overlap = 0.4
 time_len = 1
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-emotion= 'dominance'
+emotion= 'valence'
 label_method = 'binary'
 batch_size = 160
 data_type = torch.float32
@@ -41,6 +41,7 @@ history = trainer.fit()
 #____plot_result___#
 plot.plot_training_history(history)
   
+
 
 
 
