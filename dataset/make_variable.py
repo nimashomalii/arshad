@@ -12,7 +12,7 @@ def extract_and_tensor (path , dtype) :
 
 def slice_data(data, overlap, time_len):
     sampling_rate = 128
-    slice_len = time_len * sampling_rate
+    slice_len = int(time_len * sampling_rate)
     overlap_samples = int(slice_len * (overlap / 100))
     step = slice_len - overlap_samples
     sliced_data = []
@@ -106,6 +106,7 @@ class dataset(nn.Module) :
             self.test_data = (self.test_data- self.mean) / std_dev
     def receive_data(self) : 
         return self.train_data , self.test_data , self.train_labels , self.test_labels
+
 
 
 
