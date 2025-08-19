@@ -44,6 +44,7 @@ def validate(model_name, emotion , k , num_people= 23) :
             train_acc += np.array(history['train_acc'])
             val_acc  += np.array(history['val_acc'])
         i+=1
+        print(history['train_loss'])
     train_loss /= len_patients
     val_loss /= len_patients
     train_acc /= len_patients
@@ -51,5 +52,6 @@ def validate(model_name, emotion , k , num_people= 23) :
     return train_loss , val_loss , train_acc , val_acc
 
     
+
 
 
