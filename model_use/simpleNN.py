@@ -6,11 +6,10 @@ from train import Trainer
 import torch
 
 #____Model______#
-def create_model(test_person) : 
+def create_model(test_person , emotion) : 
     overlap = 0.1
     time_len = 5
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    emotion= 'arousal'
     label_method = 'binary'
     batch_size = 126 
     data_type = torch.float32
@@ -33,3 +32,4 @@ def create_model(test_person) :
     )
     #____fit_model_____#
     return  trainer.fit()
+
