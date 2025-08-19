@@ -1,7 +1,7 @@
 from dataset.main import data
 import torch 
 import os # os را برای چک کردن cuda اضافه کنید
-from models.simpleNN import model
+from models_structures.simpleNN import model
 from train import Trainer
 import torch
 import plot 
@@ -41,6 +41,7 @@ history = trainer.fit()
 #____plot_result___#
 plot.plot_training_history(history)
   
+
 
 
 
