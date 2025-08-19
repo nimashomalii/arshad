@@ -6,7 +6,7 @@ from train import Trainer
 import torch
 
 #____Model______#
-def create_model(test_person , emotion) : 
+def create_model(test_person , emotion , fold_idx) : 
     overlap = 0.1
     time_len = 5
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -32,4 +32,5 @@ def create_model(test_person , emotion) :
     )
     #____fit_model_____#
     return  trainer.fit()
+
 
