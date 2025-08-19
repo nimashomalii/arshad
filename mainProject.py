@@ -2,7 +2,7 @@ from kfold_validation import validate
 import sys
 from plot import plot_training_history
 emotion = sys.argv[2]
-k  = sys.argv[3]
+k  = float(sys.argv[3])
 model_name  = sys.argv[1]
 train_loss , val_loss , train_acc , val_acc = validate(model_name, emotion , k , 23)
 history = {
@@ -12,4 +12,5 @@ history = {
     'val_acc' : val_acc
 }
 plot_training_history(history)
+
 
