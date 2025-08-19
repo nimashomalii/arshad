@@ -27,10 +27,11 @@ def create_model(test_person , emotion , fold_idx) :
         optimizer_cls=torch.optim.Adam,
         lr=1e-3,
         epochs=50,
-        checkpoint_path="eeg_checkpoint.pth",
-        log_path="eeg_log.json"
+        checkpoint_path=f"eeg_checkpoint{fold_idx}.pth",
+        log_path=f"eeg_log{fold_idx}.json"
     )
     #____fit_model_____#
     return  trainer.fit()
+
 
 
