@@ -29,8 +29,8 @@ def k_fold_validation(k, num_people=23):
 def validate(model_name, emotion , k , num_people= 23) : 
     pateints = k_fold_validation(k , num_people)
     len_patients = len(pateints)
-    for i in range(len_patients) : 
-        test_person = pateints[i]
+    i = 0 
+    for test_person in pateints : 
         history = choose_model(model_name, emotion , test_person)
         if i ==0 : 
             train_loss = np.array(history['train_loss'])
@@ -42,6 +42,7 @@ def validate(model_name, emotion , k , num_people= 23) :
             val_loss += np.array(history['val_loss'])
             train_acc += np.array(history['train_acc'])
             val_acc  += np.array(history['val_acc'])
+        i+=1
     train_loss /= len_patients
     val_loss /= len_patients
     train_acc /= len_patients
@@ -49,3 +50,4 @@ def validate(model_name, emotion , k , num_people= 23) :
     return train_loss , val_loss , train_acc , val_acc
 
     
+
