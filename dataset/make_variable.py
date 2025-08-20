@@ -1,7 +1,7 @@
 import torch 
 import os 
 import pickle as pik
-from torch.nn import nn 
+import torch.nn as nn 
 
 def extract_and_tensor (path , dtype) : 
     if os.path.exists(path) : 
@@ -114,4 +114,5 @@ class dataset(nn.Module) :
             self.test_data = (self.test_data- self.mean) / std_dev
     def recieve_data(self) : 
         return self.train_data , self.test_data , self.train_labels , self.test_labels
+
 
