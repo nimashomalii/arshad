@@ -26,13 +26,13 @@ def k_fold_validation(k, num_people=23):
     
     return kfold_patients
 
-def validate(model_name, emotion , k , num_people= 23) : 
+def validate(model_name, emotion ,category, k , num_people= 23) : 
     pateints = k_fold_validation(k , num_people)
     len_patients = len(pateints)
     i = 0 
     for test_person in pateints :
         print("a new procedure is takeing place . . . " ) 
-        history = choose_model(model_name, emotion , test_person , fold_idx=i)
+        history = choose_model(model_name, emotion, category , test_person , fold_idx=i)
         if i ==0 : 
             train_loss = np.array(history['train_loss'])
             val_loss = np.array(history['val_loss'])
