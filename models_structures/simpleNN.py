@@ -9,10 +9,13 @@ class model(nn.Module) :
         for b in layer_neuron[1:] : 
             self.layers.append(nn.Linear(a , b))
             a = b 
+        self.relu = nn.ReLU()
     def forward(self , x ) : 
         x = x.view(x.size(0), -1) 
-        for layer in self.layers : 
+        for layer in self.layers[:-1] : 
             x = layer(x)
+            x = self.relu(x)
+        x = self.layers[-1](x)
         return x
 
 
