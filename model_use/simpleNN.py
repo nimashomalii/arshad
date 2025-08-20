@@ -6,17 +6,20 @@ from train import Trainer
 import torch
 
 #____Model______#
-def create_model(test_person , emotion , fold_idx) : 
+def create_model(test_person , emotion,category , fold_idx ) : 
     overlap = 0.1
     time_len = 5
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    label_method = 'binary'
+    if category == 'binary'  :
+        output_dim = 2 
+    elif category == '5category' :
+        output_dim = 5
     batch_size = 126 
     data_type = torch.float32
-    my_dataset = data(test_person, overlap, time_len, device, emotion, label_method, batch_size, data_type)
+    my_dataset = data(test_person, overlap, time_len, device, emotion, category, batch_size, data_type)
     train_loader = my_dataset.train_data()
     test_loader = my_dataset.test_data()
-    Model = model([8960, 64, 1])  # معماری دلخواه
+    Model = model([8960, 64, output_dim])  # معماری دلخواه
 
     #____trainer_______#
     trainer = Trainer(
@@ -24,11 +27,12 @@ def create_model(test_person , emotion , fold_idx) :
         train_loader=train_loader,
         test_loader=test_loader,
         device=device,
+        label_method=category,
         optimizer_cls=torch.optim.Adam,
         lr=1e-3,
         epochs=50,
         checkpoint_path=f"eeg_checkpoint{fold_idx}.pth",
-        log_path=f"eeg_log{fold_idx}.json"
+        log_path=f"eeg_log{fold_idx}.json", 
     )
     #____fit_model_____#
     return  trainer.fit()
