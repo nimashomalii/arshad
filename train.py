@@ -5,19 +5,20 @@ import os
 import json
 
 class Trainer:
-    def __init__(self, model, train_loader, test_loader, device,
+    def __init__(self, model, train_loader, test_loader, device,label_method,
                  optimizer_cls=optim.Adam, lr=1e-3, epochs=10, loss_fn=None,
                  checkpoint_path="checkpoint.pth", log_path="training_log.json"):
         """
         کلاس آموزش با قابلیت ادامه از چک‌پوینت.
         """
+        self.label_method = label_method
         self.model = model.to(device)
         self.train_loader = train_loader
         self.test_loader = test_loader
         self.device = device
         self.epochs = epochs
         self.optimizer = optimizer_cls(self.model.parameters(), lr=lr)
-        self.loss_fn = loss_fn if loss_fn else nn.BCEWithLogitsLoss()
+        self.loss_fn = loss_fn if loss_fn else  nn.CrossEntropyLoss()
         self.checkpoint_path = checkpoint_path
         self.log_path = log_path
         self.start_epoch = 1
@@ -60,11 +61,11 @@ class Trainer:
         total_loss = 0
         loop = tqdm(self.train_loader, desc="Training", leave=False)
         for x, y in loop:
-            x, y = x.to(self.device), y.to(self.device).float()
+            x, y = x.to(self.device), y.to(self.device).int()
 
             self.optimizer.zero_grad()
             y_pred = self.model(x)
-            loss = self.loss_fn(y_pred.squeeze(), y)
+            loss = self.loss_fn(y_pred, y)
             loss.backward()
             self.optimizer.step()
 
@@ -81,34 +82,34 @@ class Trainer:
 
         with torch.no_grad():
             for x, y in self.test_loader:
-                x, y = x.to(self.device), y.to(self.device).float()
+                x, y = x.to(self.device), y.to(self.device).long()
                 y_pred = self.model(x)
-                loss = self.loss_fn(y_pred.squeeze(), y)
-                total_loss += loss.item()
+                loss = self.loss_fn(y_pred, y)
+                total_loss += loss.item()*x.size(0)
 
-                predicted = (torch.sigmoid(y_pred) > 0.5).int()
-                correct += (predicted.squeeze() == y.int()).sum().item()
+                predicted = torch.argmax(y_pred , dim=1)
+                correct += (predicted == y.int()).sum().item()
                 total += y.size(0)
 
         accuracy_test = 100 * correct / total
-        loss_test = total_loss / len(self.test_loader)
+        loss_test = total_loss / total
         total_loss = 0
         correct = 0
         total = 0
 
         with torch.no_grad():
             for x, y in self.train_loader:
-                x, y = x.to(self.device), y.to(self.device).float()
+                x, y = x.to(self.device), y.to(self.device).long()
                 y_pred = self.model(x)
-                loss = self.loss_fn(y_pred.squeeze(), y)
-                total_loss += loss.item()
+                loss = self.loss_fn(y_pred, y)
+                total_loss += loss.item()*x.size(0)
 
-                predicted = (torch.sigmoid(y_pred) > 0.5).int()
-                correct += (predicted.squeeze() == y.int()).sum().item()
+                predicted = torch.argmax(y_pred , dim=1)
+                correct += (predicted == y.int()).sum().item()
                 total += y.size(0)
 
         accuracy_train = 100 * correct / total
-        loss_train = total_loss / len(self.train_loader)
+        loss_train = total_loss / total
         return loss_train , loss_test,accuracy_train ,  accuracy_test
 
     def fit(self):
