@@ -1,7 +1,7 @@
 import torch 
 import os 
 import pickle as pik
-import torch.nn as nn 
+from torch.nn import nn 
 
 def extract_and_tensor (path , dtype) : 
     if os.path.exists(path) : 
@@ -13,6 +13,7 @@ def extract_and_tensor (path , dtype) :
 def slice_data(data, overlap, time_len):
     sampling_rate = 128
     slice_len = int(time_len * sampling_rate)
+    #step = int(slice_len * (1 - overlap))
     overlap_samples = int(slice_len * (overlap / 100))
     step = slice_len - overlap_samples
     sliced_data = []
@@ -47,8 +48,8 @@ class dataset(nn.Module) :
         base_extracted_dir = file_path['base_extracted_dir']
         label_file_path = file_path['labels_file']
         stimuli_files = file_path['stimuli_files']
-        baseline_data = extract_and_tensor(base_extracted_dir,  dtype ) #(23, 18 , 7808, 14)
-        labels = extract_and_tensor(label_file_path ,  dtype)
+        baseline_data = extract_and_tensor(base_extracted_dir, dtype) #(23, 18 , 7808, 14)
+        labels = extract_and_tensor(label_file_path, dtype)
 
         all_train_data_slices = []
         all_train_label_slices = []
@@ -95,6 +96,13 @@ class dataset(nn.Module) :
         if self.label_method == 'binary' : 
             self.train_labels = (self.train_labels > 2).long() 
             self.test_labels = (self.test_labels > 2).long()
+        else : 
+            self.train_labels -= 1 
+            self.test_labels -=1 
+            self.train_labels = self.train_labels.long()
+            self.test_labels = self.test_labels.long()
+
+
 
     def normalize(self):
             self.mean = self.train_data.mean()
@@ -104,10 +112,6 @@ class dataset(nn.Module) :
             std_dev = torch.sqrt(self.variance)
             self.train_data = (self.train_data - self.mean)/ std_dev
             self.test_data = (self.test_data- self.mean) / std_dev
-    def receive_data(self) : 
+    def recieve_data(self) : 
         return self.train_data , self.test_data , self.train_labels , self.test_labels
-
-
-
-
 
