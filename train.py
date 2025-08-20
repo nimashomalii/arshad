@@ -61,7 +61,7 @@ class Trainer:
         total_loss = 0
         loop = tqdm(self.train_loader, desc="Training", leave=False)
         for x, y in loop:
-            x, y = x.to(self.device), y.to(self.device).int()
+            x, y = x.to(self.device), y.to(self.device).long()
 
             self.optimizer.zero_grad()
             y_pred = self.model(x)
@@ -133,4 +133,5 @@ class Trainer:
             # ذخیره چک‌پوینت
             self._save_checkpoint(epoch)
         return self.history
+
 
