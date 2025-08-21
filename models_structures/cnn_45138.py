@@ -56,14 +56,20 @@ class model(nn.Module):
         return mapped.unsqueeze(1) #(batch , 1 , time_len  , 81 )
     def forward(self , x ) :
         x = self.x_mapping(x)
+        print(x.shape)
         x = self.layer1(x)
+        print(x.shape)
         x = self.layer2(x)
+        print(x.shape)
         x = self.layer3(x)
         batch = x.shape[0]
+        print(x.shape)
         x  = x.view(batch , -1)
+        print(x.shape)
         x = self.dropout(x)
         x = self.fully_connected(x)
         return x 
+
 
 
 
