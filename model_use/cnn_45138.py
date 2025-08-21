@@ -20,7 +20,7 @@ def create_model(test_person , emotion,category , fold_idx ) :
     my_dataset = data(test_person, overlap, time_len, device, emotion, category, batch_size, data_type)
     train_loader = my_dataset.train_data()
     test_loader = my_dataset.test_data()
-    Model = model(time_len=time_len  , num_output= output_dim)
+    Model = model(time_len = time_len *128 , num_output= output_dim)
 
     #____trainer_______#
     trainer = Trainer(
@@ -37,6 +37,7 @@ def create_model(test_person , emotion,category , fold_idx ) :
     )
     #____fit_model_____#
     return  trainer.fit()
+
 
 
 
