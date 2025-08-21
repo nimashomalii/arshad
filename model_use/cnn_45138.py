@@ -9,13 +9,13 @@ import torch
 #____Model______#                          categy ; binary or 5category
 def create_model(test_person , emotion,category , fold_idx ) : 
     overlap = 0.1
-    time_len = 2
+    time_len = 1
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     if category == 'binary'  :
         output_dim = 2 
     elif category == '5category' :
         output_dim = 5
-    batch_size = 126 
+    batch_size = 250
     data_type = torch.float32
     my_dataset = data(test_person, overlap, time_len, device, emotion, category, batch_size, data_type)
     train_loader = my_dataset.train_data()
@@ -37,6 +37,7 @@ def create_model(test_person , emotion,category , fold_idx ) :
     )
     #____fit_model_____#
     return  trainer.fit()
+
 
 
 
