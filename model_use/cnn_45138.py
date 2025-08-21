@@ -31,12 +31,13 @@ def create_model(test_person , emotion,category , fold_idx ) :
         label_method=category,
         optimizer_cls=torch.optim.Adam,
         lr=1e-3,
-        epochs=50,
+        epochs=20,
         checkpoint_path=f"eeg_checkpoint{fold_idx}.pth",
         log_path=f"eeg_log{fold_idx}.json", 
     )
     #____fit_model_____#
     return  trainer.fit()
+
 
 
 
