@@ -8,8 +8,8 @@ import torch
 
 #____Model______#                          categy ; binary or 5category
 def create_model(test_person , emotion,category , fold_idx ) : 
-    overlap = 0.4
-    time_len = 5
+    overlap = 0.2
+    time_len = 3
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     if category == 'binary'  :
         output_dim = 2 
@@ -37,6 +37,7 @@ def create_model(test_person , emotion,category , fold_idx ) :
     )
     #____fit_model_____#
     return  trainer.fit()
+
 
 
 
