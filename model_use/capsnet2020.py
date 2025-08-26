@@ -19,18 +19,23 @@ def loss_fn (v , y , landa=0.5 , m_plus=0.9 , m_mines=0.1) :  #v:  (B, M) y:(B)
 #____Model______#                          categy ; binary or 5category
 def create_model(test_person , emotion,category , fold_idx ) : 
     overlap = 0.1
-    time_len = 5
+    time_len = 1 * 128
+    num_filter = 256
+    num_channel = 14 , 
+    caps_len = 8
+    out_dim= 16
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     if category == 'binary'  :
         output_dim = 2 
     elif category == '5category' :
         output_dim = 5
-    batch_size = 126 
+    num_emotions = output_dim
+    batch_size = 256
     data_type = torch.float32
     my_dataset = data(test_person, overlap, time_len, device, emotion, category, batch_size, data_type)
     train_loader = my_dataset.train_data()
     test_loader = my_dataset.test_data()
-    Model = model(time_len=time_len  , num_output= output_dim)
+    Model = model (num_filter, num_channel, time_len, caps_len, num_emotions, out_dim)
     unique_Loss_fn = lambda v , y : loss_fn(v , y)
     #____trainer_______#
     trainer = Trainer(
