@@ -79,7 +79,7 @@ class EmotionCaps(nn.Module):
 
 
 class model(nn.Module):
-    def __init__(self, num_filter=32, num_channel=4, time_len=100, caps_len=8, num_emotions=6, out_dim=16):
+    def __init__(self, num_filter, num_channel, time_len, caps_len, num_emotions, out_dim):
         super().__init__()
         self.conv1 = nn.Conv2d(in_channels=1, out_channels=num_filter, kernel_size=3, padding=1)
         self.conv2 = nn.Conv2d(in_channels=num_filter, out_channels=num_filter, kernel_size=3, padding=1)
@@ -112,3 +112,4 @@ class model(nn.Module):
         v = self.emotion_caps(u)  # (B, M, out_dim)
         v_abs = torch.norm(v , dim=-1)
         return v_abs
+
