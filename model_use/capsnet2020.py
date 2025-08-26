@@ -21,7 +21,7 @@ def create_model(test_person , emotion,category , fold_idx ) :
     overlap = 0.1
     time_len = 1 * 128
     num_filter = 256
-    num_channel = 14 , 
+    num_channel = 14
     caps_len = 8
     out_dim= 16
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -53,6 +53,7 @@ def create_model(test_person , emotion,category , fold_idx ) :
     )
     #____fit_model_____#
     return  trainer.fit()
+
 
 
 
