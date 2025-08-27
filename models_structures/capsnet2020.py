@@ -97,19 +97,16 @@ class model(nn.Module):
 
     def forward(self, x):
         # x: (B, 1, time_len , num_channel)
-        print(x.shape)
         x = x.unsqueeze(1)
-        print(x.shape)
         x = self.conv1(x)
-        print(x.shape)
         y = self.conv2(x)
-        print(x.shape)
         x = torch.cat((x, y), dim=1)
+        print(x.shape)
         x = self.conv3(x)
-
+        print(x.shape)
         # reshape به (B, num_capsules, caps_len)
         x = x.view(x.size(0), -1, self.caps_len)
-
+        print(x.shape)
         # primary capsules
         u = self.primary_caps(x)  # (B, N, caps_len)
 
@@ -117,6 +114,7 @@ class model(nn.Module):
         v = self.emotion_caps(u)  # (B, M, out_dim)
         v_abs = torch.norm(v , dim=-1)
         return v_abs
+
 
 
 
