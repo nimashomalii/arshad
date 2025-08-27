@@ -81,10 +81,11 @@ class EmotionCaps(nn.Module):
 class model(nn.Module):
     def __init__(self, num_filter, num_channel, time_len, caps_len, num_emotions, out_dim):
         super().__init__()
-        self.conv1 = nn.Conv2d(in_channels=1, out_channels=num_filter, kernel_size=3, padding=1)
-        self.conv2 = nn.Conv2d(in_channels=num_filter, out_channels=num_filter, kernel_size=3, padding=1)
+        self.conv1 = nn.Conv2d(in_channels=1, out_channels=num_filter, kernel_size=6, stride=2, padding=2)
+        self.conv2 = nn.Conv2d(in_channels=num_filter, out_channels=num_filter, kernel_size=6, stride=1, padding=3)
+        # bottleneck 1x1
         self.conv3 = nn.Conv2d(in_channels=2 * num_filter, out_channels=num_filter, kernel_size=1)
-
+        
         self.caps_len = caps_len
 
         # PrimaryCaps: بعد از کانولوشن reshape میشه به (B, num_capsules, in_dim)
@@ -114,6 +115,7 @@ class model(nn.Module):
         v = self.emotion_caps(u)  # (B, M, out_dim)
         v_abs = torch.norm(v , dim=-1)
         return v_abs
+
 
 
 
