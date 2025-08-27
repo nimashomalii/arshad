@@ -2,7 +2,7 @@ from dataset.main import data
 import torch 
 import torch.nn as nn 
 import os # os را برای چک کردن cuda اضافه کنید
-from models_structures.cnn_45138 import model
+from models_structures.capsnet2020 import model
 from train import Trainer
 import torch
 
@@ -53,6 +53,7 @@ def create_model(test_person , emotion,category , fold_idx ) :
     )
     #____fit_model_____#
     return  trainer.fit()
+
 
 
 
