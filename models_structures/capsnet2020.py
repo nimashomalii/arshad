@@ -96,7 +96,8 @@ class model(nn.Module):
                                         num_emotions=num_emotions, out_dim=out_dim)
 
     def forward(self, x):
-        # x: (B, 1, num_channel, time_len)
+        # x: (B, 1, time_len , num_channel)
+        x = x.unsqueeze(1)
         x = self.conv1(x)
         y = self.conv2(x)
         x = torch.cat((x, y), dim=1)
@@ -112,4 +113,5 @@ class model(nn.Module):
         v = self.emotion_caps(u)  # (B, M, out_dim)
         v_abs = torch.norm(v , dim=-1)
         return v_abs
+
 
