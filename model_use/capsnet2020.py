@@ -19,7 +19,7 @@ def loss_fn (v , y , landa=0.5 , m_plus=0.9 , m_mines=0.1) :  #v:  (B, M) y:(B)
 #____Model______#                          categy ; binary or 5category
 def create_model(test_person , emotion,category , fold_idx ) : 
     overlap = 0.1
-    time_len = 1 * 128
+    time_len = 1 
     num_filter = 256
     num_channel = 14
     caps_len = 8
@@ -53,6 +53,7 @@ def create_model(test_person , emotion,category , fold_idx ) :
     )
     #____fit_model_____#
     return  trainer.fit()
+
 
 
 
