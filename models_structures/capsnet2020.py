@@ -105,9 +105,8 @@ class model(nn.Module):
         y = self.padd_layer(x)
         y = self.conv2(y)
         y = self.relu(y)
-        print(x.shape)
-        print(y.shape)
         x = torch.cat((x, y), dim=1)
+        print(x.shape)
         x = self.relu(x)
         x = self.conv3(x)
         # primary capsules
@@ -117,6 +116,7 @@ class model(nn.Module):
         v = self.emotion_caps(u)  # (B, M, out_dim)
         v_abs = torch.norm(v , dim=-1)
         return v_abs
+
 
 
 
