@@ -100,7 +100,9 @@ class model(nn.Module):
         # x: (B, 1, time_len , num_channel)
         x = x.unsqueeze(1)
         x = self.conv1(x)
+        print(x.shape)
         y = self.conv2(x)
+        print(y.shape)
         x = torch.cat((x, y), dim=1)
         print(x.shape)
         x = self.conv3(x)
@@ -115,6 +117,7 @@ class model(nn.Module):
         v = self.emotion_caps(u)  # (B, M, out_dim)
         v_abs = torch.norm(v , dim=-1)
         return v_abs
+
 
 
 
