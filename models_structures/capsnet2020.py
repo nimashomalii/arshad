@@ -85,7 +85,8 @@ class model(nn.Module):
         self.conv2 = nn.Conv2d(in_channels=num_filter, out_channels=num_filter, kernel_size=6, stride=1, padding='same')
         # bottleneck 1x1
         self.conv3 = nn.Conv2d(in_channels=2 * num_filter, out_channels=num_filter, kernel_size=1)
-        
+        self.padd_layer = nn.ZeroPad2d((2,3,2,3))
+        self.relu = nn.ReLU()
         self.caps_len = caps_len
 
         # PrimaryCaps: بعد از کانولوشن reshape میشه به (B, num_capsules, in_dim)
@@ -100,16 +101,15 @@ class model(nn.Module):
         # x: (B, 1, time_len , num_channel)
         x = x.unsqueeze(1)
         x = self.conv1(x)
+        x = self.relu(x)
+        y = self.padd_layer(x)
+        y = self.conv2(y)
+        y = self.relu(y)
         print(x.shape)
-        y = self.conv2(x)
         print(y.shape)
         x = torch.cat((x, y), dim=1)
-        print(x.shape)
+        x = self.relu(x)
         x = self.conv3(x)
-        print(x.shape)
-        # reshape به (B, num_capsules, caps_len)
-        x = x.view(x.size(0), -1, self.caps_len)
-        print(x.shape)
         # primary capsules
         u = self.primary_caps(x)  # (B, N, caps_len)
 
@@ -117,6 +117,7 @@ class model(nn.Module):
         v = self.emotion_caps(u)  # (B, M, out_dim)
         v_abs = torch.norm(v , dim=-1)
         return v_abs
+
 
 
 
