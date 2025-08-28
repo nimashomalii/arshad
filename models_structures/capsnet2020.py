@@ -2,32 +2,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-
-class PrimaryCaps(nn.Module):
-    def __init__(self, caps_len, out_dim):
-        super().__init__()
-        self.caps_len = caps_len
-        self.out_dim = out_dim
-        self.matrices = None   # بعداً initialize می‌کنیم
-
-    def forward(self, x):
-        # x شکل: (B, N, in_dim)
-        B, N, in_dim = x.size()
-
-        # اگه اولین بار باشه => initialize
-        if self.matrices is None:
-            self.matrices = nn.ModuleList([
-                nn.Linear(in_dim, self.caps_len) for _ in range(N)
-            ])
-            self.matrices = self.matrices.to(x.device)
-
-        u = []
-        for i in range(N):
-            u.append(self.matrices[i](x[:, i, :]))  # (B, caps_len)
-        u = torch.stack(u, dim=1)  # (B, N, caps_len)
-        return u
-
-
 class EmotionCaps(nn.Module):
     def __init__(self, num_emotions, out_dim, num_iterations=3):
         super().__init__()
@@ -81,8 +55,6 @@ class model(nn.Module):
         self.relu = nn.ReLU()
         self.caps_len = caps_len
 
-        # PrimaryCaps: بعد از کانولوشن reshape میشه به (B, num_capsules, in_dim)
-        self.primary_caps = PrimaryCaps(caps_len=caps_len, out_dim=16)
         self.emotion_caps = EmotionCaps(num_emotions=num_emotions, out_dim=out_dim)
 
     def forward(self, x):
@@ -97,10 +69,7 @@ class model(nn.Module):
         x = self.relu(x)
         x = self.conv3(x)
         x = x.view(x.size(0), -1, self.caps_len)
-        u = self.primary_caps(x)  # (B, N, caps_len)
-
         # emotion capsules
         v = self.emotion_caps(u)  # (B, M, out_dim)
         v_abs = torch.norm(v , dim=-1)
         return v_abs
-
