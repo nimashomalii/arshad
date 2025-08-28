@@ -28,7 +28,6 @@ class PrimaryCaps(nn.Module):
         return u
 
 
-
 class EmotionCaps(nn.Module):
     def __init__(self, num_emotions, out_dim, num_iterations=3):
         super().__init__()
@@ -39,7 +38,11 @@ class EmotionCaps(nn.Module):
         self.num_iterations = num_iterations
         self.W = None  # lazy init
 
-    # اینجا تابع forward قبلی رو پاک کن و اینو بذار:
+    def squash(self, s, dim=-1):
+        norm = torch.norm(s, dim=dim, keepdim=True)
+        scale = (norm**2) / (1 + norm**2)
+        return scale * s / (norm + 1e-8)
+
     def forward(self, u):
         B, N, in_dim = u.size()
 
@@ -52,13 +55,12 @@ class EmotionCaps(nn.Module):
 
         u_exp = u.unsqueeze(2).unsqueeze(-1)
         u_hat = torch.matmul(self.W, u_exp).squeeze(-1)
-
         b = torch.zeros(B, self.num_capsules, self.num_emotions, device=u.device)
 
         for r in range(self.num_iterations):
             c = F.softmax(b, dim=2).unsqueeze(-1)
             s = (c * u_hat).sum(dim=1)
-            v = self.squash(s)
+            v = self.squash(s)  # <--- اینجا باید squash باشه
 
             if r < self.num_iterations - 1:
                 v_exp = v.unsqueeze(1).unsqueeze(-1)
