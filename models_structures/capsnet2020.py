@@ -4,7 +4,7 @@ import torch.nn.functional as F
 
 
 class PrimaryCaps(nn.Module):
-    def __init__(self, num_channel, time_len, caps_len, num_filter, in_dim):
+    def __init__(self, num_channel, time_len, caps_len, num_filter, out_dim):
         super().__init__()
         self.num_channel = num_channel
         self.time_len = time_len
@@ -15,7 +15,7 @@ class PrimaryCaps(nn.Module):
         # تعداد کپسول‌های اولیه
         self.num_capsules = num_channel * time_len * (num_filter // caps_len)
 
-        # هر کپسول اولیه یک لایه Linear دارد: (in_dim -> caps_len)
+        # هر کپسول اولیه یک لایه Linear دارد: (out_dim -> caps_len)
         self.matrices = nn.ModuleList([
             nn.Linear(in_dim, caps_len) for _ in range(self.num_capsules)
         ])
@@ -106,9 +106,10 @@ class model(nn.Module):
         y = self.conv2(y)
         y = self.relu(y)
         x = torch.cat((x, y), dim=1)
-        print(x.shape)
         x = self.relu(x)
         x = self.conv3(x)
+        x = x.view(x.size(0), -1, self.caps_len)
+        print(x.shape)
         # primary capsules
         u = self.primary_caps(x)  # (B, N, caps_len)
 
@@ -116,6 +117,7 @@ class model(nn.Module):
         v = self.emotion_caps(u)  # (B, M, out_dim)
         v_abs = torch.norm(v , dim=-1)
         return v_abs
+
 
 
 
