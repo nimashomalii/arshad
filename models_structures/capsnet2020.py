@@ -4,29 +4,29 @@ import torch.nn.functional as F
 
 
 class PrimaryCaps(nn.Module):
-    def __init__(self, num_channel, time_len, caps_len, num_filter, out_dim):
+    def __init__(self, caps_len, out_dim):
         super().__init__()
-        self.num_channel = num_channel
-        self.time_len = time_len
         self.caps_len = caps_len
-        self.num_filter = num_filter
         self.out_dim = out_dim
-
-        # تعداد کپسول‌های اولیه
-        self.num_capsules = num_channel * time_len * (num_filter // caps_len)
-
-        # هر کپسول اولیه یک لایه Linear دارد: (out_dim -> caps_len)
-        self.matrices = nn.ModuleList([
-            nn.Linear(out_dim, caps_len) for _ in range(self.num_capsules)
-        ])
+        self.matrices = None   # بعداً initialize می‌کنیم
 
     def forward(self, x):
-        # x شکل: (B, num_capsules, in_dim)
+        # x شکل: (B, N, in_dim)
+        B, N, in_dim = x.size()
+
+        # اگه اولین بار باشه => initialize
+        if self.matrices is None:
+            self.matrices = nn.ModuleList([
+                nn.Linear(in_dim, self.caps_len) for _ in range(N)
+            ])
+            self.matrices = self.matrices.to(x.device)
+
         u = []
-        for i in range(self.num_capsules):
-            u.append(self.matrices[i](x[:, i, :]))  # خروجی: (B, caps_len)
-        u = torch.stack(u, dim=1)  # (B, num_capsules, caps_len)
+        for i in range(N):
+            u.append(self.matrices[i](x[:, i, :]))  # (B, caps_len)
+        u = torch.stack(u, dim=1)  # (B, N, caps_len)
         return u
+
 
 
 class EmotionCaps(nn.Module):
@@ -90,7 +90,7 @@ class model(nn.Module):
         self.caps_len = caps_len
 
         # PrimaryCaps: بعد از کانولوشن reshape میشه به (B, num_capsules, in_dim)
-        self.primary_caps = PrimaryCaps(num_channel, time_len, caps_len, num_filter, out_dim=16)
+        self.primary_caps = PrimaryCaps(caps_len=caps_len, out_dim=16)
 
         # EmotionCaps
         num_capsules = num_channel * time_len * (num_filter // caps_len)
@@ -110,25 +110,9 @@ class model(nn.Module):
         x = self.conv3(x)
         x = x.view(x.size(0), -1, self.caps_len)
         print(x.shape)
-        # primary capsules
         u = self.primary_caps(x)  # (B, N, caps_len)
-
+        print(u.shape)
         # emotion capsules
         v = self.emotion_caps(u)  # (B, M, out_dim)
         v_abs = torch.norm(v , dim=-1)
         return v_abs
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
