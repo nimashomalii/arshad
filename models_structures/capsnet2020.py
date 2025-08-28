@@ -29,27 +29,35 @@ class PrimaryCaps(nn.Module):
 
 
 
+
 class EmotionCaps(nn.Module):
-    def __init__(self, num_capsules, in_dim, num_emotions, out_dim, num_iterations=3):
+    def __init__(self, num_emotions, out_dim, num_iterations=3):
         super().__init__()
-        self.num_capsules = num_capsules   # N
-        self.in_dim = in_dim               # طول بردار اولیه
-        self.num_emotions = num_emotions   # M (تعداد کپسول‌های ثانویه)
+        self.num_capsules = None     # N (lazy)
+        self.in_dim = None           # طول بردار اولیه (lazy)
+        self.num_emotions = num_emotions   # M
         self.out_dim = out_dim             # طول بردار ثانویه
         self.num_iterations = num_iterations
 
-        # ماتریس تبدیل: (1, N, M, out_dim, in_dim)
-        self.W = nn.Parameter(torch.randn(1, num_capsules, num_emotions, out_dim, in_dim))
+        # وزن‌ها رو اینجا None می‌ذاریم
+        self.W = None  
 
     def squash(self, s, dim=-1):
-        # squash activation
         norm = torch.norm(s, dim=dim, keepdim=True)
         scale = (norm**2) / (1 + norm**2)
         return scale * s / (norm + 1e-8)
 
     def forward(self, u):
         # u: (B, N, in_dim)
-        B = u.size(0)
+        B, N, in_dim = u.size()
+
+        # بار اول که forward اجرا بشه → W رو می‌سازیم
+        if self.W is None:
+            self.num_capsules = N
+            self.in_dim = in_dim
+            self.W = nn.Parameter(
+                torch.randn(1, N, self.num_emotions, self.out_dim, in_dim, device=u.device)
+            )
 
         # آماده‌سازی برای matmul
         u_exp = u.unsqueeze(2).unsqueeze(-1)  # (B, N, 1, in_dim, 1)
@@ -61,17 +69,11 @@ class EmotionCaps(nn.Module):
         b = torch.zeros(B, self.num_capsules, self.num_emotions, device=u.device)
 
         for r in range(self.num_iterations):
-            # softmax روی بعد M → برای هر i جمع c_ij روی j برابر 1
             c = F.softmax(b, dim=2).unsqueeze(-1)  # (B, N, M, 1)
-
-            # s_j = sum_i c_ij * u_hat_ij
-            s = (c * u_hat).sum(dim=1)  # (B, M, out_dim)
-
-            # squash → v_j
-            v = self.squash(s)  # (B, M, out_dim)
+            s = (c * u_hat).sum(dim=1)             # (B, M, out_dim)
+            v = self.squash(s)                     # (B, M, out_dim)
 
             if r < self.num_iterations - 1:
-                # توافق u_hat_ij ⋅ v_j
                 uv = torch.matmul(u_hat, v.unsqueeze(-1)).squeeze(-1)  # (B, N, M)
                 b = b + uv
 
@@ -91,11 +93,7 @@ class model(nn.Module):
 
         # PrimaryCaps: بعد از کانولوشن reshape میشه به (B, num_capsules, in_dim)
         self.primary_caps = PrimaryCaps(caps_len=caps_len, out_dim=16)
-
-        # EmotionCaps
-        num_capsules = num_channel * time_len * (num_filter // caps_len)
-        self.emotion_caps = EmotionCaps(num_capsules, in_dim=caps_len,
-                                        num_emotions=num_emotions, out_dim=out_dim)
+        self.emotion_caps = EmotionCaps(num_emotions=num_emotions, out_dim=out_dim)
 
     def forward(self, x):
         # x: (B, 1, time_len , num_channel)
@@ -111,7 +109,7 @@ class model(nn.Module):
         x = x.view(x.size(0), -1, self.caps_len)
         print(x.shape)
         u = self.primary_caps(x)  # (B, N, caps_len)
-        print(u.shape)
+
         # emotion capsules
         v = self.emotion_caps(u)  # (B, M, out_dim)
         v_abs = torch.norm(v , dim=-1)
