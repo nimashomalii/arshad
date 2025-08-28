@@ -10,14 +10,14 @@ class PrimaryCaps(nn.Module):
         self.time_len = time_len
         self.caps_len = caps_len
         self.num_filter = num_filter
-        self.in_dim = in_dim
+        self.out_dim = out_dim
 
         # تعداد کپسول‌های اولیه
         self.num_capsules = num_channel * time_len * (num_filter // caps_len)
 
         # هر کپسول اولیه یک لایه Linear دارد: (out_dim -> caps_len)
         self.matrices = nn.ModuleList([
-            nn.Linear(in_dim, caps_len) for _ in range(self.num_capsules)
+            nn.Linear(out_dim, caps_len) for _ in range(self.num_capsules)
         ])
 
     def forward(self, x):
@@ -117,6 +117,7 @@ class model(nn.Module):
         v = self.emotion_caps(u)  # (B, M, out_dim)
         v_abs = torch.norm(v , dim=-1)
         return v_abs
+
 
 
 
