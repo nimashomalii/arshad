@@ -90,7 +90,7 @@ class model(nn.Module):
         self.caps_len = caps_len
 
         # PrimaryCaps: بعد از کانولوشن reshape میشه به (B, num_capsules, in_dim)
-        self.primary_caps = PrimaryCaps(num_channel, time_len, caps_len, num_filter, in_dim=caps_len)
+        self.primary_caps = PrimaryCaps(num_channel, time_len, caps_len, num_filter, out_dim=16)
 
         # EmotionCaps
         num_capsules = num_channel * time_len * (num_filter // caps_len)
@@ -117,6 +117,7 @@ class model(nn.Module):
         v = self.emotion_caps(u)  # (B, M, out_dim)
         v_abs = torch.norm(v , dim=-1)
         return v_abs
+
 
 
 
