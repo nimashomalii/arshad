@@ -97,10 +97,10 @@ class model(nn.Module):
         x = self.relu(x)
         x = self.conv3(x)
         x = x.view(x.size(0), -1, self.caps_len)
-        print(x.shape)
         u = self.primary_caps(x)  # (B, N, caps_len)
 
         # emotion capsules
         v = self.emotion_caps(u)  # (B, M, out_dim)
         v_abs = torch.norm(v , dim=-1)
         return v_abs
+
