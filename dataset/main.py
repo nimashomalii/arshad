@@ -21,7 +21,7 @@ def prepar_dataset(test_person, over_lap, time_len , device, emotion, label_meth
 
     data_manage = dataset(test_person, over_lap, time_len, emotion, label_method)
     data_manage.extract(file_path, data_type)
-    data_manage.normalize()
+    #data_manage.normalize()
     x_train, x_test, y_train, y_test = data_manage.recieve_data()
 
     x_train = x_train.to(device)
@@ -43,6 +43,7 @@ class data :
         return self.train_loader
     def  test_data(self ) : 
         return self.test_loader
+
 
 
 
