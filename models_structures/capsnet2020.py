@@ -29,29 +29,20 @@ class PrimaryCaps(nn.Module):
 
 
 
-
 class EmotionCaps(nn.Module):
     def __init__(self, num_emotions, out_dim, num_iterations=3):
         super().__init__()
-        self.num_capsules = None     # N (lazy)
-        self.in_dim = None           # طول بردار اولیه (lazy)
-        self.num_emotions = num_emotions   # M
-        self.out_dim = out_dim             # طول بردار ثانویه
+        self.num_capsules = None
+        self.in_dim = None
+        self.num_emotions = num_emotions
+        self.out_dim = out_dim
         self.num_iterations = num_iterations
+        self.W = None  # lazy init
 
-        # وزن‌ها رو اینجا None می‌ذاریم
-        self.W = None  
-
-    def squash(self, s, dim=-1):
-        norm = torch.norm(s, dim=dim, keepdim=True)
-        scale = (norm**2) / (1 + norm**2)
-        return scale * s / (norm + 1e-8)
-
+    # اینجا تابع forward قبلی رو پاک کن و اینو بذار:
     def forward(self, u):
-        # u: (B, N, in_dim)
         B, N, in_dim = u.size()
 
-        # بار اول که forward اجرا بشه → W رو می‌سازیم
         if self.W is None:
             self.num_capsules = N
             self.in_dim = in_dim
@@ -59,25 +50,22 @@ class EmotionCaps(nn.Module):
                 torch.randn(1, N, self.num_emotions, self.out_dim, in_dim, device=u.device)
             )
 
-        # آماده‌سازی برای matmul
-        u_exp = u.unsqueeze(2).unsqueeze(-1)  # (B, N, 1, in_dim, 1)
+        u_exp = u.unsqueeze(2).unsqueeze(-1)
+        u_hat = torch.matmul(self.W, u_exp).squeeze(-1)
 
-        # محاسبه‌ی u_hat
-        u_hat = torch.matmul(self.W, u_exp).squeeze(-1)  # (B, N, M, out_dim)
-
-        # b_ij مقدار اولیه صفر
         b = torch.zeros(B, self.num_capsules, self.num_emotions, device=u.device)
 
         for r in range(self.num_iterations):
-            c = F.softmax(b, dim=2).unsqueeze(-1)  # (B, N, M, 1)
-            s = (c * u_hat).sum(dim=1)             # (B, M, out_dim)
-            v = self.squash(s)                     # (B, M, out_dim)
+            c = F.softmax(b, dim=2).unsqueeze(-1)
+            s = (c * u_hat).sum(dim=1)
+            v = self.squash(s)
 
             if r < self.num_iterations - 1:
-                uv = torch.matmul(u_hat, v.unsqueeze(-1)).squeeze(-1)  # (B, N, M)
+                v_exp = v.unsqueeze(1).unsqueeze(-1)
+                uv = torch.matmul(u_hat.unsqueeze(-2), v_exp).squeeze(-1).squeeze(-1)
                 b = b + uv
 
-        return v  # (B, M, out_dim)
+        return v
 
 
 class model(nn.Module):
