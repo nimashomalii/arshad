@@ -2,8 +2,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-def x_to_cnn(input) : 
-    data =torch.zeros(input.shape[0] ,input.shape[1]  , 9 , 9)
+def x_to_cnn(input ) : 
+    data =torch.zeros(input.shape[0] ,input.shape[1]  , 9 , 9 ,device=input.device)
     grids = [(1,3) , (2,0) , (4,2) , (3,1) , (4,0) , (6,0) , (8,3) , (8,5) , (6,8) , (4,8) , (3,7) , (2,6) , (2,8) , (1,5)]
     for g, (i, j) in enumerate(grids):
         data[:, :, i, j] = input[:, :, g]
@@ -54,8 +54,8 @@ class EmotionCaps(nn.Module):
 class model(nn.Module):
     def __init__(self, num_filter, time_len, caps_len, num_emotions, out_dim):
         super().__init__()
-        self.conv1 = nn.Conv2d(in_channels=time_len, out_channels=num_filter, kernel_size=6, stride=2, padding=0)
-        self.conv2 = nn.Conv2d(in_channels=num_filter, out_channels=num_filter, kernel_size=6, stride=1)
+        self.conv1 = nn.Conv2d(in_channels=time_len, out_channels=num_filter, kernel_size=4, stride=1, padding=0)
+        self.conv2 = nn.Conv2d(in_channels=num_filter, out_channels=num_filter, kernel_size=4, stride=1 , padding=2)
         # bottleneck 1x1
         self.conv3 = nn.Conv2d(in_channels=2 * num_filter, out_channels=num_filter, kernel_size=1)
         self.padd_layer = nn.ZeroPad2d((2,3,2,3))
@@ -69,8 +69,7 @@ class model(nn.Module):
         x = x_to_cnn(x)
         x = self.conv1(x)
         x = self.relu(x)
-        y = self.padd_layer(x)
-        y = self.conv2(y)
+        y = self.conv2(x)
         y = self.relu(y)
         x = torch.cat((x, y), dim=1)
         x = self.relu(x)
