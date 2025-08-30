@@ -19,18 +19,18 @@ def loss_fn (v , y , landa=0.5 , m_plus=0.9 , m_mines=0.1) :  #v:  (B, M) y:(B)
 #____Model______#                          categy ; binary or 5category
 def create_model(test_person , emotion,category , fold_idx ) : 
     overlap = 0
-    time_len = 1 
+    time_len = 2 
     num_filter = 256
     num_channel = 14
     caps_len = 8
-    out_dim= 16
+    out_dim= 32
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     if category == 'binary'  :
         output_dim = 2 
     elif category == '5category' :
         output_dim = 5
     num_emotions = output_dim
-    batch_size =100
+    batch_size 256
     data_type = torch.float32
     my_dataset = data(test_person, overlap, time_len, device, emotion, category, batch_size, data_type)
     train_loader = my_dataset.train_data()
@@ -45,7 +45,7 @@ def create_model(test_person , emotion,category , fold_idx ) :
         device=device,
         label_method=category,
         optimizer_cls=torch.optim.Adam,
-        lr=8e-5,
+        lr=2e-4,
         epochs=30,
         loss_fn = unique_Loss_fn, 
         checkpoint_path=f"eeg_checkpoint{fold_idx}.pth",
@@ -53,6 +53,7 @@ def create_model(test_person , emotion,category , fold_idx ) :
     )
     #____fit_model_____#
     return  trainer.fit()
+
 
 
 
