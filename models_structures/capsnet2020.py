@@ -55,10 +55,10 @@ class model(nn.Module):
     def __init__(self, num_filter, time_len, caps_len, num_emotions, out_dim):
         super().__init__()
         self.conv1 = nn.Conv2d(in_channels=time_len, out_channels=num_filter, kernel_size=4, stride=1, padding=0)
-        self.conv2 = nn.Conv2d(in_channels=num_filter, out_channels=num_filter, kernel_size=4, stride=1 , padding=2)
+        self.conv2 = nn.Conv2d(in_channels=num_filter, out_channels=num_filter, kernel_size=4, stride=1)
         # bottleneck 1x1
         self.conv3 = nn.Conv2d(in_channels=2 * num_filter, out_channels=num_filter, kernel_size=1)
-        self.padd_layer = nn.ZeroPad2d((2,3,2,3))
+        self.padd_layer = nn.ZeroPad2d((2,1,2,1))
         self.relu = nn.ReLU()
         self.caps_len = caps_len
 
@@ -69,7 +69,8 @@ class model(nn.Module):
         x = x_to_cnn(x)
         x = self.conv1(x)
         x = self.relu(x)
-        y = self.conv2(x)
+        y = self.padd_layer(x)
+        y = self.conv2(y)
         y = self.relu(y)
         x = torch.cat((x, y), dim=1)
         x = self.relu(x)
