@@ -20,10 +20,10 @@ def loss_fn (v , y , landa=0.5 , m_plus=0.9 , m_mines=0.1) :  #v:  (B, M) y:(B)
 def create_model(test_person , emotion,category , fold_idx ) : 
     overlap = 0
     time_len = 2 
-    num_filter = 256
+    num_filter = 128
     num_channel = 14
     caps_len = 8
-    out_dim= 32
+    out_dim= 16
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     if category == 'binary'  :
         output_dim = 2 
@@ -53,6 +53,7 @@ def create_model(test_person , emotion,category , fold_idx ) :
     )
     #____fit_model_____#
     return  trainer.fit()
+
 
 
 
