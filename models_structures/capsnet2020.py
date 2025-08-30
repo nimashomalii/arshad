@@ -2,6 +2,13 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+def x_to_cnn(input) : 
+    data =torch.zeros(input.shape[0] ,input.shape[1]  , 9 , 9)
+    grids = [(1,3) , (2,0) , (4,2) , (3,1) , (4,0) , (6,0) , (8,3) , (8,5) , (6,8) , (4,8) , (3,7) , (2,6) , (2,8) , (1,5)]
+    for g, (i, j) in enumerate(grids):
+        data[:, :, i, j] = input[:, :, g]
+    return data
+
 class EmotionCaps(nn.Module):
     def __init__(self, num_emotions, out_dim, num_iterations=3):
         super().__init__()
@@ -59,7 +66,7 @@ class model(nn.Module):
 
     def forward(self, x):
         # x: (B, 1, time_len , num_channel)
-        x = x.unsqueeze(1)
+        x = x_to_cnn(x)
         x = self.conv1(x)
         x = self.relu(x)
         y = self.padd_layer(x)
