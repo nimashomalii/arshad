@@ -66,6 +66,7 @@ class model(nn.Module):
 
     def forward(self, x):
         # x: (B, 1, time_len , num_channel)
+        x = x.unsqueeze(1)
         x = self.conv1(x)
         x = self.relu(x)
         y = self.conv2(x)
@@ -78,4 +79,5 @@ class model(nn.Module):
         v = self.emotion_caps(x)  # (B, M, out_dim)
         v_abs = torch.norm(v , dim=-1)
         return v_abs
+
 
