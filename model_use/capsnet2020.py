@@ -20,10 +20,10 @@ def loss_fn (v , y , landa=0.5 , m_plus=0.9 , m_mines=0.1) :  #v:  (B, M) y:(B)
 def create_model(test_person , emotion,category , fold_idx ) : 
     overlap = 0
     time_len = 1 
-    num_filter =512
+    num_filter =256
     num_channel = 14 
     caps_len = 8
-    out_dim= 32
+    out_dim= 16
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     if category == 'binary'  :
         output_dim = 2 
@@ -45,7 +45,7 @@ def create_model(test_person , emotion,category , fold_idx ) :
         device=device,
         label_method=category,
         optimizer_cls=torch.optim.Adam,
-        lr=7e-5,
+        lr=9e-5,
         epochs=30,
         loss_fn = unique_Loss_fn, 
         checkpoint_path=f"eeg_checkpoint{fold_idx}.pth",
@@ -53,6 +53,7 @@ def create_model(test_person , emotion,category , fold_idx ) :
     )
     #____fit_model_____#
     return  trainer.fit()
+
 
 
 
