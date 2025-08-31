@@ -45,7 +45,7 @@ def create_model(test_person , emotion,category , fold_idx ) :
         device=device,
         label_method=category,
         optimizer_cls=torch.optim.Adam,
-        lr=9e-6,
+        lr=2e-5,
         epochs=30,
         loss_fn = unique_Loss_fn, 
         checkpoint_path=f"eeg_checkpoint{fold_idx}.pth",
@@ -53,6 +53,7 @@ def create_model(test_person , emotion,category , fold_idx ) :
     )
     #____fit_model_____#
     return  trainer.fit()
+
 
 
 
