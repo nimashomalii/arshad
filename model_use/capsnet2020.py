@@ -63,6 +63,10 @@ def create_model(test_person , emotion,category , fold_idx ) :
 
 
 def subject_dependent_validation (emotion ,category, fold_idx , k=5) : 
+    num_filter =256
+    num_channel = 14 
+    caps_len = 8
+    out_dim= 16
     overlap = 0.05
     time_len = 1
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -70,6 +74,7 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
         output_dim = 2 
     elif category == '5category' :
         output_dim = 5
+    num_emotions = output_dim
     batch_size = 128
     data_type = torch.float32
     accuracies_on_subjects  = {
@@ -86,7 +91,8 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
             test_loader = DataLoader(test_dataset ,batch_size , shuffle=True )
             train_dataset = TensorDataset(x_train , y_train )
             train_loader = DataLoader(train_dataset , batch_size,shuffle=True )
-            Model = model([1792, 64, output_dim])  # معماری دلخواه        
+            Model = model (num_filter, 128* time_len, caps_len, num_emotions, out_dim)
+            unique_Loss_fn = lambda v , y : loss_fn(v , y) # معماری دلخواه        
             #____trainer_______#
             trainer = Trainer(
                 model=Model,
@@ -95,8 +101,9 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
                 device=device,
                 label_method=category,
                 optimizer_cls=torch.optim.Adam,
-                lr=1e-3,
+                lr=2e-5,
                 epochs=30,
+                loss_fn = unique_Loss_fn, 
                 checkpoint_path=f"eeg_checkpoint{fold_idx + person_num*5}.pth",
                 log_path=f"eeg_log{fold_idx + person_num*5}.json", 
             )
