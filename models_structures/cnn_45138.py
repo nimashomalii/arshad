@@ -40,12 +40,12 @@ class layer(nn.Module):
 class model(nn.Module): 
     def __init__(self , time_len , num_output): 
         super().__init__()
-        self.layer1 = layer(1 , 8 , 3,1 , 1)
-        self.layer2 = layer(8 , 16 , 3 , 1 , 1 )
-        self.layer3 = layer(16 , 32 , 3 , 1 , 1)
+        self.layer1 = layer(1 , 4 , 3,1 , 1)
+        self.layer2 = layer(4 , 8 , 3 , 1 , 1 )
+        #self.layer3 = layer(16 , 32 , 3 , 1 , 1)
         self.dropout = nn.Dropout(p = 0.2)
-        #out : (batch , 32 , 16 , 10)
-        self.fully_connected  = nn.Linear(32*(time_len//8)*10 , num_output)
+        #out : (batch , 8 , 16 , 10)
+        self.fully_connected  = nn.Linear(8*(time_len//4)*20 , num_output)
         self.mapping_idx = [4,13,19,21,29,31,37,39,47,49,55,57,67,76]
     def x_mapping(self , x )  :
         #this function maps the input x (batch , time_len , 14) into (batch , 1 , time_len , 81)
@@ -58,18 +58,9 @@ class model(nn.Module):
         x = self.x_mapping(x)
         x = self.layer1(x)
         x = self.layer2(x)
-        x = self.layer3(x)
+        #x = self.layer3(x)
         batch = x.shape[0]
         x  = x.view(batch , -1)
         x = self.dropout(x)
         x = self.fully_connected(x)
         return x 
-
-
-
-
-
-
-
-
-
