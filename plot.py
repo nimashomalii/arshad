@@ -30,3 +30,23 @@ def plot_training_history(history):
     plt.legend()
     plt.tight_layout()
     plt.savefig("accuracy_plot.png")
+
+
+def plot_subject_dependet(accuracies):
+    # بررسی و تبدیل تنسور به numpy
+    for key in accuracies:
+        if isinstance(accuracies[key], torch.Tensor):
+            accuracies[key] = accuracies[key].detach().cpu().numpy()
+    
+    epochs = range(1, len(accuracies['train']) + 1)
+
+    # --- نمودار Loss ---
+    plt.figure(figsize=(8, 6))
+    plt.plot(epochs, accuracies['train'], label='Train Loss')
+    plt.plot(epochs, accuracies['test'], label='Test Loss')
+    plt.xlabel('subject')
+    plt.ylabel('accuracies')
+    plt.savefig("loss_plot.png")
+
+
+
