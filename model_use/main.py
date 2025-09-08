@@ -16,13 +16,13 @@ def choose_model(name ,emotion , category,  test_person , fold_idx  , subject_de
     if (name == 'cnn_45138') & (subject_dependecy == 'subject_independent') : 
         return cnn_45138(test_person , emotion ,category, fold_idx)
     if (name == 'cnn_45138') & (subject_dependecy == 'subject_dependent') : 
-        return cnn_45138(test_person , emotion ,category, fold_idx)
+        return cnn_45138( emotion ,category, fold_idx)
 
 
     if (name == 'capsnet2020') & (subject_dependecy == 'subject_independent') : 
         return capsnet2020(test_person , emotion ,category, fold_idx)
     if (name == 'capsnet2020') & (subject_dependecy == 'subject_dependent') : 
-        return capsnet2020(test_person , emotion ,category, fold_idx)
+        return capsnet2020( emotion ,category, fold_idx)
 
 
 
