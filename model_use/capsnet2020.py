@@ -66,7 +66,7 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
     num_filter =16
     num_channel = 14 
     caps_len = 8
-    out_dim= 24
+    out_dim= 8
     overlap = 0
     time_len = 1
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -101,7 +101,7 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
                 device=device,
                 label_method=category,
                 optimizer_cls=torch.optim.Adam,
-                lr=1e-3,
+                lr=1e-4,
                 epochs=30,
                 loss_fn = unique_Loss_fn, 
                 checkpoint_path=f"eeg_checkpoint{fold_idx + person_num*5}.pth",
@@ -129,6 +129,7 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
         accuracies_on_subjects['train'].append(np.max(np.array(train_acc)))
         accuracies_on_subjects['test'].append(np.max(np.array(val_acc)))
     return accuracies_on_subjects
+
 
 
 
