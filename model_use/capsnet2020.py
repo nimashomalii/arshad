@@ -63,7 +63,7 @@ def create_model(test_person , emotion,category , fold_idx ) :
 
 
 def subject_dependent_validation (emotion ,category, fold_idx , k=5) : 
-    num_filter =12
+    num_filter =16
     num_channel = 14 
     caps_len = 8
     out_dim= 12
@@ -129,6 +129,7 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
         accuracies_on_subjects['train'].append(np.max(np.array(train_acc)))
         accuracies_on_subjects['test'].append(np.max(np.array(val_acc)))
     return accuracies_on_subjects
+
 
 
 
