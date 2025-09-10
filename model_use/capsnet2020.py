@@ -75,7 +75,7 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
     elif category == '5category' :
         output_dim = 5
     num_emotions = output_dim
-    batch_size = 128
+    batch_size = 64
     data_type = torch.float32
     accuracies_on_subjects  = {
         'train' : [] , 
@@ -101,8 +101,8 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
                 device=device,
                 label_method=category,
                 optimizer_cls=torch.optim.Adam,
-                lr=2e-5,
-                epochs=30,
+                lr=1e-4,
+                epochs=15,
                 loss_fn = unique_Loss_fn, 
                 checkpoint_path=f"eeg_checkpoint{fold_idx + person_num*5}.pth",
                 log_path=f"eeg_log{fold_idx + person_num*5}.json", 
@@ -129,3 +129,4 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
         accuracies_on_subjects['train'].append(np.max(np.array(train_acc)))
         accuracies_on_subjects['test'].append(np.max(np.array(val_acc)))
     return accuracies_on_subjects
+
