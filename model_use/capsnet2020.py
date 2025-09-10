@@ -63,7 +63,7 @@ def create_model(test_person , emotion,category , fold_idx ) :
 
 
 def subject_dependent_validation (emotion ,category, fold_idx , k=5) : 
-    num_filter =256
+    num_filter =16
     num_channel = 14 
     caps_len = 8
     out_dim= 16
