@@ -3,6 +3,8 @@ import os
 import pickle as pik
 import torch.nn as nn 
 import random
+from torch.utils.data  import Dataset , DataLoader
+
 
 def extract_and_tensor (path , dtype) : 
     if os.path.exists(path) : 
@@ -93,3 +95,56 @@ class dataset(nn.Module) :
 
 
 
+class shuffled_dataset : 
+    def __init__(self, dtype , file_path , label_method,overlap,time_lenght, emotion , device) : 
+        self.data = [] 
+        self.overlap = overlap
+        self.time_lenght = time_lenght
+        self.emotion = emotion
+        self.emotion_number = 0
+        if self.emotion == 'valence' : 
+            self.emotion_number  =1
+        elif self.emotion=="dominance" : 
+            self.emotion_number = 2
+        self.label_method = label_method
+        self.variance =  1
+        self.mean = 0
+        clip_numbers = list(range(18))
+        base_extracted_dir = file_path['base_extracted_dir']
+        label_file_path = file_path['labels_file']
+        stimuli_files = file_path['stimuli_files']
+        baseline_data = extract_and_tensor(base_extracted_dir, dtype) #(23, 18 , 7808, 14)
+        labels = extract_and_tensor(label_file_path, dtype)
+        for person in range(23) :
+            x , y = self.make_data(clip_numbers, person , dtype, stimuli_files, baseline_data ,labels  ) 
+            idx =  torch.randperm(x.shape[0])
+            x = x[idx , : ,: ]
+            y  = y[idx]
+            self.data.append((x.to(device) , y.to(device) ))
+
+    def make_data(self , clip_numbers, person , dtype, stimuli_files, baseline_data ,labels  ) : 
+        all_train_data_slices = []
+        all_train_label_slices = []
+        for i in clip_numbers:
+            stimuli_data = extract_and_tensor(stimuli_files[i], dtype=dtype)
+            person_stimuli = stimuli_data[person, :, :]
+            sliced_stimuli = slice_data(person_stimuli, self.overlap, self.time_lenght)
+            sliced_baseline= slice_data(baseline_data[person][i] , 0 , self.time_lenght)
+            sliced_baseline = torch.sum(sliced_baseline , dim=0)/sliced_baseline.shape[0]
+            sliced_stimuli -= sliced_baseline
+            if sliced_stimuli is not None and sliced_stimuli.shape[0] > 0:
+                all_train_data_slices.append(sliced_stimuli)
+                
+                num_slices = sliced_stimuli.shape[0]
+                current_label = labels[person][i][self.emotion_number]
+                sliced_labels = torch.full((num_slices,), current_label, dtype=torch.long)
+                all_train_label_slices.append(sliced_labels)
+
+        train_data = torch.cat(all_train_data_slices, dim=0) # (batch , time_len , 14)
+        train_labels = torch.cat(all_train_label_slices, dim=0) #(batch,)
+        if self.label_method == 'binary' : 
+            train_labels = (train_labels > 2).long() 
+        else : 
+            train_labels -= 1 
+            train_labels= train_labels.long()
+        return train_data , train_labels
