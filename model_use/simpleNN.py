@@ -54,9 +54,22 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
         'train' : [] , 
         'test' : []
     } 
-    for person_num in range(23) : 
+    data = data_for_subject_dependet(overlap , time_len ,emotion ,category ,data_type , device  )
+    for (x , y) in data : 
         fold_idx = 0
-        for (x_train , x_test , y_train , y_test) in data_for_subject_dependet(overlap , time_len , emotion , category , data_type , device ,person_num , k): 
+        len_data = x.shape[0]
+        fold_number = len_data//k 
+        all_x = [x[fold_number*i : min(fold_number*(i+1) , len_data) , : , : ] for i in range(k)]
+        all_y = [y[fold_number*i : min(fold_number*(i+1) , len_data)] for i in range(k)]
+
+        for i in range(k): 
+            x_test = all_x[i]
+            y_test = all_y[i]
+            x_train = all_x[:i] + all_x[i+1:]
+            y_train = all_y[:i] + all_y[i+1:]
+            x_train = torch.concat(x_train , dim=0)
+            y_train = torch.concat(y_train , dim=0)
+
             print(f'''
                         the size of the x_train is : {x_train.shape[0]}
             ''')
