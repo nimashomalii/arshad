@@ -55,7 +55,7 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
         'test' : []
     } 
     data = data_for_subject_dependet(overlap , time_len ,emotion ,category ,data_type , device  )
-    for (x , y) in data : 
+    for (x , y) in data.data: 
         fold_idx = 0
         len_data = x.shape[0]
         fold_number = len_data//k 
@@ -113,3 +113,4 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
         accuracies_on_subjects['train'].append(np.max(np.array(train_acc)))
         accuracies_on_subjects['test'].append(np.max(np.array(val_acc)))
     return accuracies_on_subjects
+
