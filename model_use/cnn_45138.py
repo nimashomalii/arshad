@@ -74,9 +74,6 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
             y_train = all_y[:i] + all_y[i+1:]
             x_train = torch.concat(x_train , dim=0)
             y_train = torch.concat(y_train , dim=0)
-            print(f'''
-                        the size of the x_train is : {x_train.shape[0]}
-            ''')
             test_dataset = TensorDataset(x_test , y_test)
             test_loader = DataLoader(test_dataset ,batch_size , shuffle=True )
             train_dataset = TensorDataset(x_train , y_train )
