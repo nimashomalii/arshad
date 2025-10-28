@@ -118,13 +118,6 @@ class shuffled_dataset :
         stimuli_files = file_path['stimuli_files']
         baseline_data = extract_and_tensor(base_extracted_dir, dtype) #(23, 18 , 7808, 14)
         labels = extract_and_tensor(label_file_path, dtype)
-
-
-
-        print('this part is for dataset and we check what happend')
-
-
-
         for person in range(23) :
             x , y = self.make_data(clip_numbers, person , dtype, stimuli_files, baseline_data ,labels  ) 
             idx =  torch.randperm(x.shape[0])
