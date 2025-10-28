@@ -153,7 +153,7 @@ class shuffled_dataset :
             train_labels= train_labels.long()
         return train_data , train_labels
 
-class KFoldDataset:
+class kfold_dataset:
     def __init__(self, dtype, file_path, label_method, overlap, time_len, emotion, device, k=5):
         self.data = []  # لیست خروجی (data, label) برای هر شخص
         self.overlap = overlap
