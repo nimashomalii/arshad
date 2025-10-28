@@ -63,10 +63,10 @@ def create_model(test_person , emotion,category , fold_idx ) :
 
 
 def subject_dependent_validation (emotion ,category, fold_idx , k=5) : 
-    num_filter =128
+    num_filter =32
     num_channel = 14 
-    caps_len = 8
-    out_dim= 16
+    caps_len = 4
+    out_dim= 8
     overlap = 0
     time_len = 1
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
