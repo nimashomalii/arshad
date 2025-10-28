@@ -62,7 +62,7 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
         fold_number = len_data//k 
         all_x = [x[fold_number*i : min(fold_number*(i+1) , len_data) , : , : ] for i in range(k)]
         all_y = [y[fold_number*i : min(fold_number*(i+1) , len_data)] for i in range(k)]
-        print(f'this process is for the person {person_num} and the len of the data is {len_data}')
+        print(f'this process is for the person {person_num}')
         for i in range(k): 
             x_test = all_x[i]
             y_test = all_y[i]
@@ -71,9 +71,6 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
             x_train = torch.concat(x_train , dim=0)
             y_train = torch.concat(y_train , dim=0)
 
-            print(f'''
-                        the size of the x_train is : {x_train.shape[0]}
-            ''')
             test_dataset = TensorDataset(x_test , y_test)
             test_loader = DataLoader(test_dataset ,batch_size , shuffle=True )
             train_dataset = TensorDataset(x_train , y_train )
