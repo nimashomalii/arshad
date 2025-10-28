@@ -62,7 +62,7 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
         fold_number = len_data//k 
         all_x = [x[fold_number*i : min(fold_number*(i+1) , len_data) , : , : ] for i in range(k)]
         all_y = [y[fold_number*i : min(fold_number*(i+1) , len_data)] for i in range(k)]
-
+        print(f'this process is for the person {person_num} and the len of the data is {len_data}')
         for i in range(k): 
             x_test = all_x[i]
             y_test = all_y[i]
@@ -78,7 +78,7 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
             test_loader = DataLoader(test_dataset ,batch_size , shuffle=True )
             train_dataset = TensorDataset(x_train , y_train )
             train_loader = DataLoader(train_dataset , batch_size,shuffle=True )
-            Model = model([1792, 64, output_dim])  # معماری دلخواه        
+            Model = model([1792, 64, output_dim])        
             #____trainer_______#
             trainer = Trainer(
                 model=Model,
