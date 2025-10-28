@@ -53,9 +53,10 @@ class Trainer:
             self.optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
             self.history = checkpoint.get("history", [])
             self.start_epoch = checkpoint["epoch"] + 1
-            print(f"[INFO] Resuming from epoch {self.start_epoch}")
+            #print(f"[INFO] Resuming from epoch {self.start_epoch}")
         else:
-            print("[INFO] No checkpoint found. Starting from scratch.")
+            pass
+            #print("[INFO] No checkpoint found. Starting from scratch.")
 
     def train_one_epoch(self):
         self.model.train()
