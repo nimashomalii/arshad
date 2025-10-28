@@ -3,6 +3,7 @@ from torch import nn, optim
 from tqdm import tqdm
 import os
 import json
+import numpy as np
 
 class Trainer:
     def __init__(self, model, train_loader, test_loader, device,label_method,
@@ -124,14 +125,20 @@ class Trainer:
             self.history['train_acc'].append(accuracy_train)
             self.history['val_acc'].append(accuracy_test)
 
-            #print(f"Epoch [{epoch}/{self.epochs}] "
-            #      f"Train Loss: {loss_train:.4f} | "
-            #      f"Val Loss: {loss_test:.4f} | "
-            #      f"train Acc: {accuracy_train:.2f} |"
-            #      f"Val Acc: {accuracy_test:.2f}%")
+
+
 
             # ذخیره چک‌پوینت
             self._save_checkpoint(epoch)
+
+
+        print(
+            f"Train Loss: {np.mean(self.history['train_loss'][-5:]):.4f} | "
+            f"Val Loss: {np.mean(self.history['val_loss'][-5:]):.4f} | "
+            f"Train Acc: {np.mean(self.history['train_acc'][-5:]):.2f}% | "
+            f"Val Acc: {np.mean(self.history['val_acc'][-5:]):.2f}%"
+        )
+
         return self.history
 
 
