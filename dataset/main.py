@@ -5,7 +5,7 @@ from dataset.extractor import DataExtractor
 from dataset.make_variable import dataset
 import random
 from  torch.utils.data import DataLoader , TensorDataset
-from dataset.dataset_subject_dependet import shuffled_dataset as dataset_for_subjet_dependet
+from dataset.dataset_subject_dependet import kfold_dataset as dataset_for_subjet_dependet
 import time
 
 import torch.nn as nn 
@@ -47,14 +47,14 @@ class data :
 
 
 
-def data_for_subject_dependet(overlap , time_len ,  emotion , label_method , data_type , device ) :
+def data_for_subject_dependet(overlap , time_len ,  emotion , label_method , data_type , device , k=5 ) :
     with open('dataset/config.json', 'r') as f:
         config = json.load(f)
     file_id = config['file_id']
     file_path = config['data_paths']
     extract_data = DataExtractor()
     extract_data.extract_data_file(file_id)
-    data = dataset_for_subjet_dependet(data_type, file_path , label_method , overlap , time_len , emotion , device )
+    data = dataset_for_subjet_dependet(data_type, file_path , label_method , overlap , time_len , emotion , device , k)
     return data 
 
 
