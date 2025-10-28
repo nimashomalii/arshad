@@ -10,8 +10,8 @@ import numpy as np
 
 #____Model______#
 def create_model(test_person , emotion,category , fold_idx ) : 
-    overlap = 0.1
-    time_len = 5
+    overlap = 0
+    time_len = 1
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     if category == 'binary'  :
         output_dim = 2 
