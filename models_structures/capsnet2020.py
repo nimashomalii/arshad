@@ -47,7 +47,7 @@ class EmotionCaps(nn.Module):
 
 class model(nn.Module):
     def __init__(self, num_filter=256, caps_len=8, num_emotions=2, out_dim=16):
-        super(EEGEmotionCapsNet, self).__init__()
+        super(model, self).__init__()
         self.conv1 = nn.Conv2d(1, num_filter, kernel_size=6, stride=(2, 1), padding=0)
         self.conv2 = nn.Conv2d(num_filter, num_filter, kernel_size=5, stride=1, padding=2)
         self.conv3 = nn.Conv2d(2 * num_filter, num_filter, kernel_size=1)
