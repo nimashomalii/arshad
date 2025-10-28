@@ -6,12 +6,15 @@ import random
 from torch.utils.data  import Dataset , DataLoader
 
 
-def extract_and_tensor (path , dtype) : 
-    if os.path.exists(path) : 
-        with open(path , 'rb' ) as f : 
+def extract_and_tensor(path, dtype):
+    if os.path.exists(path):
+        with open(path, 'rb') as f:
             data = pik.load(f)
-        torch_data = torch.tensor(data , dtype = dtype  )
-        return torch_data 
+        if isinstance(data, np.ndarray):
+            torch_data = torch.from_numpy(data).to(dtype)
+        else:
+            torch_data = torch.tensor(data, dtype=dtype)
+        return torch_data
 
 def slice_data(data, overlap, time_len):
     sampling_rate = 128
