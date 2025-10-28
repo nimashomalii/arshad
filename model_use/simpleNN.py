@@ -55,7 +55,7 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
         'test' : []
     } 
     person_num =0
-    data = data_for_subject_dependet(overlap , time_len ,emotion ,category ,data_type , device  )
+    data = data_for_subject_dependet(overlap , time_len ,emotion ,category ,data_type , device , k  )
     for (x , y) in data.data : 
         fold_idx = 0
         len_data = x.shape[0]
