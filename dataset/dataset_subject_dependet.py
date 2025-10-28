@@ -153,11 +153,9 @@ class shuffled_dataset :
             train_labels= train_labels.long()
         return train_data , train_labels
 
-
 class kfold_dataset:
     def __init__(self, dtype, file_path, label_method, overlap, time_len, emotion, device, k=5):
-        self.data = []
-        self.labels = []
+        self.data = []  # این همان چیزی است که لیست توپل برمی‌گرداند
         self.overlap = overlap
         self.time_len = time_len
         self.emotion = emotion
@@ -172,17 +170,15 @@ class kfold_dataset:
 
         clip_numbers = list(range(18))
         base_extracted_dir = file_path['base_extracted_dir']
+        label_file_path = file_path['labels_file']
         stimuli_files = file_path['stimuli_files']
         baseline_data = extract_and_tensor(base_extracted_dir, dtype)
-        labels = extract_and_tensor(file_path['labels_file'], dtype)
-
-        all_fold_data = []
-        all_fold_labels = []
+        labels = extract_and_tensor(label_file_path, dtype)
 
         for person in range(23):
-            # ذخیره داده‌های تقسیم شده هر کلیپ
-            clip_fold_data = []
-            clip_fold_labels = []
+            # داده‌ها و برچسب‌های هر fold از همه کلیپ‌ها
+            person_fold_data = []
+            person_fold_labels = []
 
             for i in clip_numbers:
                 stimuli_data = extract_and_tensor(stimuli_files[i], dtype=dtype)
@@ -200,22 +196,26 @@ class kfold_dataset:
 
                     # تقسیم هر کلیپ به k قسمت
                     fold_size = num_slices // k
-                    clip_fold_data.append([sliced_stimuli[j*fold_size : (j+1)*fold_size] for j in range(k)])
-                    clip_fold_labels.append([sliced_labels[j*fold_size : (j+1)*fold_size] for j in range(k)])
+                    person_fold_data.append([sliced_stimuli[j*fold_size : (j+1)*fold_size] for j in range(k)])
+                    person_fold_labels.append([sliced_labels[j*fold_size : (j+1)*fold_size] for j in range(k)])
 
-            # ترکیب داده‌های همه کلیپ‌ها برای هر fold
+            # ترکیب داده‌ها برای هر fold
+            combined_folds_data = []
+            combined_folds_labels = []
             for fold_idx in range(k):
-                fold_data = torch.cat([clip_fold_data[i][fold_idx] for i in range(18)], dim=0)
-                fold_labels = torch.cat([clip_fold_labels[i][fold_idx] for i in range(18)], dim=0)
-
-                # shuffle فقط درون fold
+                fold_data = torch.cat([person_fold_data[i][fold_idx] for i in range(18)], dim=0)
+                fold_labels = torch.cat([person_fold_labels[i][fold_idx] for i in range(18)], dim=0)
+                # shuffle درون fold
                 idx = torch.randperm(fold_data.shape[0])
                 fold_data = fold_data[idx]
                 fold_labels = fold_labels[idx]
 
-                all_fold_data.append(fold_data.to(device))
-                all_fold_labels.append(fold_labels.to(device))
+                combined_folds_data.append(fold_data)
+                combined_folds_labels.append(fold_labels)
 
-        # در نهایت data و labels به هم چسبانده شوند
-        self.data = torch.cat(all_fold_data, dim=0)
-        self.labels = torch.cat(all_fold_labels, dim=0)
+            # حالا همه k fold را به هم بچسبان
+            final_data = torch.cat(combined_folds_data, dim=0).to(device)
+            final_labels = torch.cat(combined_folds_labels, dim=0).to(device)
+
+            self.data.append((final_data, final_labels))
+            print(f'person {person} have {final_labels.shape}')
