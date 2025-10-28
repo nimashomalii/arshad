@@ -152,3 +152,70 @@ class shuffled_dataset :
             train_labels -= 1 
             train_labels= train_labels.long()
         return train_data , train_labels
+
+
+class kfold_dataset:
+    def __init__(self, dtype, file_path, label_method, overlap, time_len, emotion, device, k=5):
+        self.data = []
+        self.labels = []
+        self.overlap = overlap
+        self.time_len = time_len
+        self.emotion = emotion
+        self.k = k
+        self.device = device
+        self.emotion_number = 0
+        if emotion == 'valence':
+            self.emotion_number = 1
+        elif emotion == 'dominance':
+            self.emotion_number = 2
+        self.label_method = label_method
+
+        clip_numbers = list(range(18))
+        base_extracted_dir = file_path['base_extracted_dir']
+        stimuli_files = file_path['stimuli_files']
+        baseline_data = extract_and_tensor(base_extracted_dir, dtype)
+        labels = extract_and_tensor(file_path['labels_file'], dtype)
+
+        all_fold_data = []
+        all_fold_labels = []
+
+        for person in range(23):
+            # ذخیره داده‌های تقسیم شده هر کلیپ
+            clip_fold_data = []
+            clip_fold_labels = []
+
+            for i in clip_numbers:
+                stimuli_data = extract_and_tensor(stimuli_files[i], dtype=dtype)
+                person_stimuli = stimuli_data[person, :, :]
+                sliced_stimuli = slice_data(person_stimuli, self.overlap, self.time_len)
+
+                baseline_slice = slice_data(baseline_data[person][i], 0, self.time_len)
+                baseline_slice = torch.mean(baseline_slice, dim=0)
+                sliced_stimuli -= baseline_slice
+
+                if sliced_stimuli.shape[0] > 0:
+                    num_slices = sliced_stimuli.shape[0]
+                    current_label = labels[person][i][self.emotion_number]
+                    sliced_labels = torch.full((num_slices,), current_label, dtype=torch.long)
+
+                    # تقسیم هر کلیپ به k قسمت
+                    fold_size = num_slices // k
+                    clip_fold_data.append([sliced_stimuli[j*fold_size : (j+1)*fold_size] for j in range(k)])
+                    clip_fold_labels.append([sliced_labels[j*fold_size : (j+1)*fold_size] for j in range(k)])
+
+            # ترکیب داده‌های همه کلیپ‌ها برای هر fold
+            for fold_idx in range(k):
+                fold_data = torch.cat([clip_fold_data[i][fold_idx] for i in range(18)], dim=0)
+                fold_labels = torch.cat([clip_fold_labels[i][fold_idx] for i in range(18)], dim=0)
+
+                # shuffle فقط درون fold
+                idx = torch.randperm(fold_data.shape[0])
+                fold_data = fold_data[idx]
+                fold_labels = fold_labels[idx]
+
+                all_fold_data.append(fold_data.to(device))
+                all_fold_labels.append(fold_labels.to(device))
+
+        # در نهایت data و labels به هم چسبانده شوند
+        self.data = torch.cat(all_fold_data, dim=0)
+        self.labels = torch.cat(all_fold_labels, dim=0)
