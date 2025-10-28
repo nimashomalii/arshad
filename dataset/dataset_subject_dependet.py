@@ -4,7 +4,7 @@ import pickle as pik
 import torch.nn as nn 
 import random
 from torch.utils.data  import Dataset , DataLoader
-
+import numpy as np
 
 def extract_and_tensor(path, dtype):
     if os.path.exists(path):
