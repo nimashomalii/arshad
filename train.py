@@ -124,11 +124,11 @@ class Trainer:
             self.history['train_acc'].append(accuracy_train)
             self.history['val_acc'].append(accuracy_test)
 
-            print(f"Epoch [{epoch}/{self.epochs}] "
-                  f"Train Loss: {loss_train:.4f} | "
-                  f"Val Loss: {loss_test:.4f} | "
-                  f"train Acc: {accuracy_train:.2f} |"
-                  f"Val Acc: {accuracy_test:.2f}%")
+            #print(f"Epoch [{epoch}/{self.epochs}] "
+            #      f"Train Loss: {loss_train:.4f} | "
+            #      f"Val Loss: {loss_test:.4f} | "
+            #      f"train Acc: {accuracy_train:.2f} |"
+            #      f"Val Acc: {accuracy_test:.2f}%")
 
             # ذخیره چک‌پوینت
             self._save_checkpoint(epoch)
