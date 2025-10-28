@@ -111,6 +111,6 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
         val_loss   /=k
         val_acc    /=k
 
-        accuracies_on_subjects['train'].append(np.max(np.array(train_acc)))
-        accuracies_on_subjects['test'].append(np.max(np.array(val_acc)))
+        accuracies_on_subjects['train'].append(np.mean(np.array(train_acc[-5:])))
+        accuracies_on_subjects['test'].append(np.mean(np.array(val_acc[-5:])))
     return accuracies_on_subjects
