@@ -17,12 +17,12 @@ def create_model(test_person , emotion,category , fold_idx ) :
         output_dim = 2 
     elif category == '5category' :
         output_dim = 5
-    batch_size = 126 
+    batch_size = 128 
     data_type = torch.float32
     my_dataset = data(test_person, overlap, time_len, device, emotion, category, batch_size, data_type)
     train_loader = my_dataset.train_data()
     test_loader = my_dataset.test_data()
-    Model = model([8960, 64, output_dim])  # معماری دلخواه
+    Model = model([1792, 64, output_dim])  # معماری دلخواه
 
     #____trainer_______#
     trainer = Trainer(
@@ -111,3 +111,4 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
         accuracies_on_subjects['train'].append(np.mean(np.array(train_acc[-5:])))
         accuracies_on_subjects['test'].append(np.mean(np.array(val_acc[-5:])))
     return accuracies_on_subjects
+
