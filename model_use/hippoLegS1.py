@@ -23,7 +23,7 @@ def create_model(test_person , emotion,category , fold_idx ) :
     train_loader = my_dataset.train_data()
     test_loader = my_dataset.test_data()
 
-    x_dim , h_dim , seq_len ,c_dim = 3 , 5 , 50 , 10
+    x_dim , h_dim , seq_len ,c_dim = 14 , 5 , 128*time_len, 64
     dim2 , dim3  = 32 , 8 
     Model = model( x_dim, h_dim, c_dim   ,seq_len,dim2 , dim3 , output_dim)# معماری دلخواه
 
@@ -78,7 +78,7 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
             test_loader = DataLoader(test_dataset ,batch_size , shuffle=True )
             train_dataset = TensorDataset(x_train , y_train )
             train_loader = DataLoader(train_dataset , batch_size,shuffle=True )
-            x_dim , h_dim , seq_len ,c_dim = 3 , 5 , 50 , 10
+            x_dim , h_dim , seq_len ,c_dim = 14 , 5 , 128*time_len, 16
             dim2 , dim3  = 32 , 8 
             Model = model( x_dim, h_dim, c_dim   ,seq_len,dim2 , dim3 , output_dim)# معماری دلخواه
             
