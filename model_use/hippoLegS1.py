@@ -91,7 +91,7 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
                 label_method=category,
                 optimizer_cls=torch.optim.Adam,
                 lr=1e-4,
-                epochs=30,
+                epochs=20,
                 checkpoint_path=f"eeg_checkpoint{fold_idx + person_num*5}.pth",
                 log_path=f"eeg_log{fold_idx + person_num*5}.json", 
             )
@@ -117,4 +117,3 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
         accuracies_on_subjects['train'].append(np.mean(np.array(train_acc[-5:])))
         accuracies_on_subjects['test'].append(np.mean(np.array(val_acc[-5:])))
     return accuracies_on_subjects
-
