@@ -58,25 +58,26 @@ class RNN_block(nn.Module) :
 class RNN(nn.Module):
     def __init__(self, x_dim, h_dim, dim_c , y_dim , len_sequence):
         super().__init__()
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.rnnCell = RNN_block(x_dim, h_dim, dim_c , y_dim)
         self.h_dim = h_dim
         self.c_dim = dim_c
         self.len_sequence = len_sequence
         A , b = matrix('legs' , dim_c)
-        self.Ad ,self.bd = discretisization( A , b , len_sequence)
+        Ad ,bd = discretisization( A , b , len_sequence)
+        self.register_buffer("Ad", Ad)
+        self.register_buffer("bd", bd)
     def forward(self, x):
         # x: (batch, seq_len, features)
         batch_size = x.shape[0]
-        h_next = torch.zeros(batch_size, self.h_dim)
-        c_next = torch.zeros(batch_size, self.c_dim)
-
+        device = x.device
+        h_next = torch.zeros(batch_size, self.h_dim, device=device)
+        c_next = torch.zeros(batch_size, self.c_dim, device=device)
         out = []
-
         for i in range(self.len_sequence):
             x_t = x[:, i, :] # shape (batch, features )
             h_next, c_next , y = self.rnnCell(x_t, h_next ,c_next, self.Ad[i , : , : ] , self.bd[i , :])
             out.append(y)  # append (batch, y_dim)
-
         out = torch.stack(out, dim=1)  # (batch, seq_len, y_dim)
         return out
 
