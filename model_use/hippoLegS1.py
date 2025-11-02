@@ -17,14 +17,14 @@ def create_model(test_person , emotion,category , fold_idx ) :
         output_dim = 2 
     elif category == '5category' :
         output_dim = 5
-    batch_size = 128 
+    batch_size = 64
     data_type = torch.float32
     my_dataset = data(test_person, overlap, time_len, device, emotion, category, batch_size, data_type)
     train_loader = my_dataset.train_data()
     test_loader = my_dataset.test_data()
 
-    x_dim , h_dim , seq_len ,c_dim = 14 , 5 , 128*time_len, 64
-    dim2 , dim3  = 32 , 8 
+    x_dim , h_dim , seq_len ,c_dim = 14 , 32, 128*time_len, 64
+    dim2 , dim3  = 64 , 16 
     Model = model( x_dim, h_dim, c_dim   ,seq_len,dim2 , dim3 , output_dim)# معماری دلخواه
 
     #____trainer_______#
@@ -35,8 +35,8 @@ def create_model(test_person , emotion,category , fold_idx ) :
         device=device,
         label_method=category,
         optimizer_cls=torch.optim.Adam,
-        lr=1e-4,
-        epochs=20,
+        lr=6e-5,
+        epochs=22,
         checkpoint_path=f"eeg_checkpoint{fold_idx}.pth",
         log_path=f"eeg_log{fold_idx}.json", 
     )
@@ -51,8 +51,8 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
         output_dim = 2 
     elif category == '5category' :
         output_dim = 5
-    batch_size = 128
-    data_type = torch.float32
+    batch_size = 64
+    data_type = torch.float64
     accuracies_on_subjects  = {
         'train' : [] , 
         'test' : []
@@ -78,8 +78,8 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
             test_loader = DataLoader(test_dataset ,batch_size , shuffle=True )
             train_dataset = TensorDataset(x_train , y_train )
             train_loader = DataLoader(train_dataset , batch_size,shuffle=True )
-            x_dim , h_dim , seq_len ,c_dim = 14 , 5 , 128*time_len, 16
-            dim2 , dim3  = 32 , 8 
+            x_dim , h_dim , seq_len ,c_dim = 14 , 32 , 128*time_len, 32
+            dim2 , dim3  = 64 , 16 
             Model = model( x_dim, h_dim, c_dim   ,seq_len,dim2 , dim3 , output_dim)# معماری دلخواه
             
             #____trainer_______#
