@@ -52,7 +52,7 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
     elif category == '5category' :
         output_dim = 5
     batch_size = 64
-    data_type = torch.float64
+    data_type = torch.float32
     accuracies_on_subjects  = {
         'train' : [] , 
         'test' : []
