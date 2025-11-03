@@ -143,20 +143,34 @@ class RNN(nn.Module):
 
 
         
-class model(nn.Module) : 
-    def __init__(self , x_dim, h_dim, c_dim  , seq_len , dim2 , dim3 , dim_out) : 
+class model(nn.Module):
+    def __init__(self, x_dim, h_dim, c_dim, seq_len, dim2, dim3, dim_out):
         super().__init__()
-        self.hippo_rnn =RNN(x_dim, h_dim, c_dim , 1 , seq_len)
-        self.fc1 = nn.Linear(seq_len , dim2)
-        self.fc2 = nn.Linear(dim2 ,dim3)
-        self.fc3 = nn.Linear(dim3 ,  dim_out)
+        self.hippo_rnn = RNN(x_dim, h_dim, c_dim, 1, seq_len)
+
+        self.fc1 = nn.Linear(seq_len, dim2)
+        self.bn1 = nn.BatchNorm1d(dim2)
+        self.dropout1 = nn.Dropout(0.3)
+
+        self.fc2 = nn.Linear(dim2, dim3)
+        self.bn2 = nn.BatchNorm1d(dim3)
+        self.dropout2 = nn.Dropout(0.3)
+
+        self.fc3 = nn.Linear(dim3, dim_out)
         self.relu = nn.ReLU()
-    def forward(self , x ) :
+
+    def forward(self, x):
         x = self.hippo_rnn(x).squeeze(-1)
         x = self.relu(x)
-        x= self.fc1(x)
+        x = self.fc1(x)
+        x = self.bn1(x)
         x = self.relu(x)
-        x= self.fc2(x)        
+        x = self.dropout1(x)
+
+        x = self.fc2(x)
+        x = self.bn2(x)
         x = self.relu(x)
-        x= self.fc3(x)
+        x = self.dropout2(x)
+
+        x = self.fc3(x)
         return x
