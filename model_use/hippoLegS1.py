@@ -7,7 +7,7 @@ import random
 from functions import k_fold_data_segmentation
 from  torch.utils.data import DataLoader , TensorDataset
 import numpy as np 
-
+import torch.nn as nn
 #____Model______#
 def create_model(test_person , emotion,category , fold_idx ) : 
     overlap = 0
@@ -26,6 +26,7 @@ def create_model(test_person , emotion,category , fold_idx ) :
     x_dim , h_dim , seq_len ,c_dim = 14 , 32, 128*time_len, 64
     dim2 , dim3  = 64 , 16 
     Model = model( x_dim, h_dim, c_dim   ,seq_len,dim2 , dim3 , output_dim)# معماری دلخواه
+    criterion = nn.CrossEntropyLoss()
 
     #____trainer_______#
     trainer = Trainer(
@@ -35,10 +36,11 @@ def create_model(test_person , emotion,category , fold_idx ) :
         device=device,
         label_method=category,
         optimizer_cls=torch.optim.Adam,
-        lr=6e-5,
-        epochs=22,
-        checkpoint_path=f"eeg_checkpoint{fold_idx}.pth",
-        log_path=f"eeg_log{fold_idx}.json", 
+        lr=8e-5,
+        epochs=25,
+        loss_fn = criterion ,
+        checkpoint_path=f"eeg_checkpoint{fold_idx }.pth",
+        log_path=f"eeg_log{fold_idx }.json", 
     )
     #____fit_model_____#
     return  trainer.fit()
@@ -51,7 +53,7 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
         output_dim = 2 
     elif category == '5category' :
         output_dim = 5
-    batch_size = 64
+    batch_size = 32
     data_type = torch.float32
     accuracies_on_subjects  = {
         'train' : [] , 
@@ -81,7 +83,8 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
             x_dim , h_dim , seq_len ,c_dim = 14 , 32 , 128*time_len, 32
             dim2 , dim3  = 64 , 16 
             Model = model( x_dim, h_dim, c_dim   ,seq_len,dim2 , dim3 , output_dim)# معماری دلخواه
-            
+            criterion = nn.CrossEntropyLoss()
+
             #____trainer_______#
             trainer = Trainer(
                 model=Model,
@@ -90,8 +93,9 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
                 device=device,
                 label_method=category,
                 optimizer_cls=torch.optim.Adam,
-                lr=1e-4,
-                epochs=20,
+                lr=8e-5,
+                epochs=25,
+                loss_fn = criterion ,
                 checkpoint_path=f"eeg_checkpoint{fold_idx + person_num*5}.pth",
                 log_path=f"eeg_log{fold_idx + person_num*5}.json", 
             )
