@@ -34,7 +34,7 @@ def create_model(test_person , emotion,category , fold_idx ) :
         device=device,
         label_method=category,
         optimizer_cls=torch.optim.Adam,
-        lr=1e-3,
+        lr=1e-4,
         epochs=50,
         checkpoint_path=f"eeg_checkpoint{fold_idx}.pth",
         log_path=f"eeg_log{fold_idx}.json", 
@@ -50,7 +50,7 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
         output_dim = 2 
     elif category == '5category' :
         output_dim = 5
-    batch_size = 128
+    batch_size = 64
     data_type = torch.float32
     accuracies_on_subjects  = {
         'train' : [] , 
@@ -88,7 +88,7 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
                 device=device,
                 label_method=category,
                 optimizer_cls=torch.optim.Adam,
-                lr=1e-3,
+                lr=1e-4,
                 epochs=30,
                 checkpoint_path=f"eeg_checkpoint{fold_idx + person_num*5}.pth",
                 log_path=f"eeg_log{fold_idx + person_num*5}.json", 
@@ -115,3 +115,4 @@ def subject_dependent_validation (emotion ,category, fold_idx , k=5) :
         accuracies_on_subjects['train'].append(np.mean(np.array(train_acc[-5:])))
         accuracies_on_subjects['test'].append(np.mean(np.array(val_acc[-5:])))
     return accuracies_on_subjects
+
