@@ -32,6 +32,11 @@ def choose_model(name ,emotion , category,  test_person , fold_idx  , subject_de
     if (name == 'hippoLegS1') & (subject_dependecy == 'subject_dependent') : 
         return hippoLegS1_sub_dep(emotion ,category, fold_idx)
 
+    if (name == 's4_fully_connect') & (subject_dependecy == 'subject_independent') : 
+        return hippoLegS1(test_person , emotion ,category, fold_idx)
+    if (name =='s4_fully_connect') & (subject_dependecy == 'subject_dependent') : 
+        return hippoLegS1_sub_dep(emotion ,category, fold_idx)
+
 
 
 
