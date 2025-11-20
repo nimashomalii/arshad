@@ -21,7 +21,7 @@ class model(nn.Module):
             mode="s4",          # کرنل S4 کامل
             transposed=False,   # ورودی/خروجی شکل (B, L, D)
             channels=1,         # تعداد SSM مستقل
-            dropout=0.0,
+            dropout=0.1,
             d_state=d_model,    # ابعاد حالت داخلی S4
             rank=1              # رتبه پایین S4
         )
@@ -42,3 +42,4 @@ class model(nn.Module):
         y_last = y[:, -1, :]       # فقط تایم‌استپ آخر
         logits = self.readout(y_last).squeeze(-1)  # (B,)
         return logits
+
